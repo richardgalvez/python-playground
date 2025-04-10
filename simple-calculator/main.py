@@ -35,7 +35,7 @@ def simple_calculator():
         operation = input("\nWhat mathematical operation do you want to use? Type in +, -, *, or /: ")
         add = x + y
         subtract = x - y
-        muliply = x * y
+        multiply = x * y
           
         # Account for ZeroDivisionError (Cannot divide by zero)
         if y == 0:
@@ -50,7 +50,7 @@ def simple_calculator():
           print("\n" + str(x) + " - " + str(y) + " = " + str(subtract))
           is_calculated = True
         elif operation == "*":
-          print("\n" + str(x) + " * " + str(y) + " = " + str(muliply))
+          print("\n" + str(x) + " * " + str(y) + " = " + str(multiply))
           is_calculated = True
         elif operation == "/":
           if y == 0:
