@@ -1,6 +1,6 @@
 # 🧩 **Password Generator - Design & Implement**
 
-*Started 4/13/2025*
+*Started 4/13/2025 - Completed 4/16/2025*
 
 **Difficulty:** Easy to Medium
 
