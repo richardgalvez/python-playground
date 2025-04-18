@@ -20,14 +20,21 @@ class NoteManager:
 
     # TODO: Implement validation for unique titles.
     # Scan file for 'title': title in the current notes.json
+    found_title = ""
 
-    # if not found:
-    file = open("notes.json", "a")
-    file.write(note)
-    file.write("\n")
+    file = open("notes.json")
+    for i in file:
+      if i[11:11 + len(title)] == title:
+        print("Title already exists")
     file.close()
 
-    print("Added new note: " + note)
+    # TODO: Add note if it is unique, not already in file:
+    # file = open("notes.json", "a")
+    # file.write(note)
+    # file.write("\n")
+    # file.close()
+
+    # print("Added new note: " + note)
 
 
   def get_note(self, title: str) -> dict:
@@ -92,7 +99,7 @@ nm = NoteManager()
 # nm.create_note("Go food shopping", "Buy items from grocery list at the supermarket.")
 # nm.get_note("Go food shopping")
 
-# nm.create_note("Develop new mini-app", "Practice programming and software development.")
+nm.create_note("Develop new mini-app", "Practice programming and software development.")
 # nm.get_note("Develop new mini-app")
 
 # nm.get_note("Eat breakfast")
@@ -100,7 +107,7 @@ nm = NoteManager()
 # nm.create_note("Meeting Notes", "Walked through upcoming project deadlines.")
 # nm.get_note("Meeting Notes")
 
-nm.list_notes()
+# nm.list_notes()
 
 # nm.delete_note("Meeting Notes")
 # nm.get_note("Meeting Notes")  # Raises KeyError
