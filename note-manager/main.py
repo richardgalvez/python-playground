@@ -34,7 +34,7 @@ class NoteManager:
       file.write("\n")
       file.close()
 
-      print("Added new note: " + note)
+      print("New note added.")
 
 
   def get_note(self, title: str) -> dict:
@@ -52,7 +52,8 @@ class NoteManager:
     if len(desired_note) == 0:
       raise KeyError("Note cannot be found as it does not exist.")
     elif len(desired_note) >= 1:
-      return print(desired_note)
+      print(desired_note)
+      return desired_note
 
 
   def delete_note(self, title: str) -> None:
@@ -60,28 +61,26 @@ class NoteManager:
     Removes a note from storage based on its title.
     """
     line_count = 0
-    desired_note = ""
-    note_deleted = False
+    found_title = ""
 
-    # Read operation: Search for note to be deleted based on title
-    with open("notes.json") as file:
-      for i in file:
-        line_count += 1
-        if i[11:11 + len(title)] == title:
-          print("Found match to be deleted: " + i)
-          # Logic to delete - it would have to remove/zero out the string and write result to the file
-          desired_note = i
-    print(line_count)
-
-    # Write operation: Overwrite the note found based on line number to "" (empty),
-    # with open("notes.json", "w") as file:
-
-    # TODO: Implement validation to raise KeyError when trying to delete notes that don't exist.
-    if (desired_note != title) and (note_deleted == False):
+    # Search for note to be deleted based on title
+    infile = open("notes.json", "r").readlines()
+    for i in infile:
+      line_count += 1
+      if i[11:11 + len(title)] == title:
+        found_title = i[11:11 + len(title)]
+        break
+    
+    # Detect if note exists, and if so, proceed to "delete" by overwriting notes.json file with all lines except the note that was specified by its title.
+    if (found_title != title):
       raise KeyError("Note cannot be deleted as it does not exist.")
-    elif note_deleted == True:
-      # print("Note deleted successfully.")
-      print("Note will get deleted flag is True.")
+    else:
+      with open("notes.json", "w") as outfile:
+        for index, line in enumerate(infile):
+          if index != line_count - 1:
+            outfile.write(line)
+
+      print("Note deleted.")
 
 
   def list_notes(self) -> list[str]:
@@ -100,6 +99,7 @@ class NoteManager:
     file.close()
 
     print(note_titles)
+    return note_titles
 
 
 nm = NoteManager()
@@ -110,14 +110,23 @@ nm = NoteManager()
 # nm.create_note("Develop new mini-app", "Practice programming and software development.")
 # nm.get_note("Develop new mini-app")
 
-# nm.get_note("Eat breakfast")  # Doesn't exist - should raise error.
+# nm.create_note("Clean up backyard", "Put equipment away spread out across the backyard.")
+# nm.get_note("Clean up backyard")
+
+# nm.create_note("Cook dinner", "Season meats, prepare veggies, and cook to serve dinner.")
+# nm.get_note("Cook dinner")
 
 # nm.create_note("Meeting Notes", "Walked through upcoming project deadlines.")
 # nm.get_note("Meeting Notes")
 
-# nm.list_notes()
+nm.list_notes()
 
-# nm.delete_note("Eat breakfast") # Doesn't exist - should raise error.
+# nm.delete_note("Develop new mini-app")
+# nm.delete_note("Meeting Notes")
 
-nm.delete_note("Meeting Notes")
-nm.get_note("Meeting Notes")  # Raises KeyError
+# nm.list_notes() # List all notes after recent deletion.
+
+# nm.create_note("", "asdf") # At least 1 empty value - should raise ValueError.
+# nm.get_note("Eat breakfast")  # Doesn't exist - should raise KeyError.
+# nm.delete_note("Eat breakfast") # Doesn't exist - should raise KeyError.
+# nm.get_note("Meeting Notes")  # Doesn't exist after deletion - should raise KeyError.
