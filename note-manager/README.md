@@ -1,6 +1,6 @@
 # 🧩 Note Manager - Design & Implement
 
-*Started 4/17/2025*
+*Started 4/17/2025 - Completed 4/18/2025*
 
 Difficulty: Medium
 
@@ -14,6 +14,7 @@ You are tasked with building a note management system that allows users to creat
 
 Implement the class NoteManager with the following methods:
 
+```python
 def create_note(self, title: str, content: str) -> None:
     """
     Saves a new note with a title, content, and timestamp. Titles must be unique.
@@ -33,29 +34,30 @@ def list_notes(self) -> list[str]:
     """
     Lists the titles of all existing notes.
     """
+```
 
 # 📝 Requirements
+Each note must include:
 
-    Each note must include:
+- A title (must be unique, non-empty)
 
-        A title (must be unique, non-empty)
+- A content body
 
-        A content body
+- A timestamp (use datetime.datetime.now().isoformat())
 
-        A timestamp (use datetime.datetime.now().isoformat())
+- Notes must be persisted to a local file (notes.json) in JSON format.
 
-    Notes must be persisted to a local file (notes.json) in JSON format.
+- Raise ValueError if title or content is empty.
 
-    Raise ValueError if title or content is empty.
+- Raise KeyError if attempting to get/delete a note that doesn't exist.
 
-    Raise KeyError if attempting to get/delete a note that doesn't exist.
+- The system should handle file I/O errors gracefully on load/save.
 
-    The system should handle file I/O errors gracefully on load/save.
-
-    When creating a note, if the title already exists, raise a ValueError.
+- When creating a note, if the title already exists, raise a ValueError.
 
 # 💡 Examples
 
+```python
 nm = NoteManager()
 
 nm.create_note("Meeting Notes", "Discussed project deadlines.")
@@ -67,3 +69,5 @@ nm.list_notes()
 
 nm.delete_note("Meeting Notes")
 nm.get_note("Meeting Notes")  # Raises KeyError
+```
+

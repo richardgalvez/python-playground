@@ -102,6 +102,8 @@ class NoteManager:
     return note_titles
 
 
+### Testing Section ###
+
 nm = NoteManager()
 
 # nm.create_note("Go food shopping", "Buy items from grocery list at the supermarket.")
