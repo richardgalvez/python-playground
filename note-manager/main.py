@@ -7,7 +7,6 @@ class NoteManager:
     """
     Saves a new note with a title, content, and timestamp. Titles must be unique.
     """
-
     if len(title) <= 0 or len(title) <= 0:
       raise ValueError("Title or Content provided cannot be empty.")
 
@@ -30,10 +29,6 @@ class NoteManager:
 
     print("Added new note: " + note)
 
-    # Testing: Read the current list
-    # print_out = open("notes.json")
-    # print(print_out.read())
-    # print_out.close()
 
   def get_note(self, title: str) -> dict:
     """
@@ -57,31 +52,55 @@ class NoteManager:
     """
     Removes a note from storage based on its title.
     """
+    desired_note = ""
+
+    file = open("notes.json")
+    for i in file:
+      if i[11:11 + len(title)] == title:
+        print("Found match to be deleted: " + i)
+        # Logic to delete - it would have to remove/zero out the string and write result to the file
+        deleted_note = i
+        i = ""
+    file.close()
+
     # TODO: Implement validation to raise KeyError when trying to delete notes that don't exist.
+    if len(deleted_note) == 0:
+      raise KeyError("Note cannot be deleted as it does not exist.")
+    elif len(deleted_note) >= 1:
+      return print("Note deleted successfully.")
+
 
   def list_notes(self) -> list[str]:
     """
     Lists the titles of all existing notes.
     """
-    # Similar to get_note, just read the notes.json file and scan for the titles.
+    note_titles = []
+
+    file = open("notes.json")
+    for i in file:
+      line = i
+      line_dict = json.loads(line)
+      title_key = line_dict["title"]
+      note_titles.append(title_key)
+    file.close()
+
+    print(note_titles)
 
 
 nm = NoteManager()
 
 # nm.create_note("Go food shopping", "Buy items from grocery list at the supermarket.")
-#nm.get_note("Go food shopping")
+# nm.get_note("Go food shopping")
 
 # nm.create_note("Develop new mini-app", "Practice programming and software development.")
-nm.get_note("Develop new mini-app")
+# nm.get_note("Develop new mini-app")
 
 # nm.get_note("Eat breakfast")
 
 # nm.create_note("Meeting Notes", "Walked through upcoming project deadlines.")
 # nm.get_note("Meeting Notes")
-# Returns: {'title': 'Meeting Notes', 'content': 'Walked through upcoming project deadlines.', 'timestamp': '2025-04-17T18:25:43'.}
 
-# nm.list_notes()
-# Returns: ['Meeting Notes']
+nm.list_notes()
 
 # nm.delete_note("Meeting Notes")
 # nm.get_note("Meeting Notes")  # Raises KeyError
