@@ -7,9 +7,6 @@ class NoteManager:
     """
     Saves a new note with a title, content, and timestamp. Titles must be unique.
     """
-    if len(title) <= 0 or len(title) <= 0:
-      raise ValueError("Title or Content provided cannot be empty.")
-
     details = {
         "title": title,
         "content": content,
@@ -18,12 +15,17 @@ class NoteManager:
     note = json.dumps(details)
     title_exists = False
 
+    if len(title) <= 0 or len(title) <= 0:
+      raise ValueError("Title or Content provided cannot be empty.")
+
+    # Check for existing note, set flag to True if so.
     file = open("notes.json")
     for i in file:
       if i[11:11 + len(title)] == title:
         title_exists = True
     file.close()
 
+    # Based on flag, raise error if already exists or proceed to create the new note.
     if title_exists == True:
       raise ValueError("This is the title of a note that already exists, please use a unique title name.")
     else:
@@ -81,6 +83,7 @@ class NoteManager:
     """
     note_titles = []
 
+    # Load notes line by line from JSON format into dict format, pick out "title" key only from each, then append to final array for display.
     file = open("notes.json")
     for i in file:
       line = i
