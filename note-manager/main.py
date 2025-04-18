@@ -18,7 +18,7 @@ class NoteManager:
     if len(title) <= 0 or len(title) <= 0:
       raise ValueError("Title or Content provided cannot be empty.")
 
-    # Check for existing note, set flag to True if so.
+    # Check for existing note based on inital JSON formatting + title, set flag to True if so.
     file = open("notes.json")
     for i in file:
       if i[11:11 + len(title)] == title:
@@ -59,22 +59,29 @@ class NoteManager:
     """
     Removes a note from storage based on its title.
     """
+    line_count = 0
     desired_note = ""
+    note_deleted = False
 
-    file = open("notes.json")
-    for i in file:
-      if i[11:11 + len(title)] == title:
-        print("Found match to be deleted: " + i)
-        # Logic to delete - it would have to remove/zero out the string and write result to the file
-        deleted_note = i
-        i = ""
-    file.close()
+    # Read operation: Search for note to be deleted based on title
+    with open("notes.json") as file:
+      for i in file:
+        line_count += 1
+        if i[11:11 + len(title)] == title:
+          print("Found match to be deleted: " + i)
+          # Logic to delete - it would have to remove/zero out the string and write result to the file
+          desired_note = i
+    print(line_count)
+
+    # Write operation: Overwrite the note found based on line number to "" (empty),
+    # with open("notes.json", "w") as file:
 
     # TODO: Implement validation to raise KeyError when trying to delete notes that don't exist.
-    if len(deleted_note) == 0:
+    if (desired_note != title) and (note_deleted == False):
       raise KeyError("Note cannot be deleted as it does not exist.")
-    elif len(deleted_note) >= 1:
-      return print("Note deleted successfully.")
+    elif note_deleted == True:
+      # print("Note deleted successfully.")
+      print("Note will get deleted flag is True.")
 
 
   def list_notes(self) -> list[str]:
@@ -103,12 +110,14 @@ nm = NoteManager()
 # nm.create_note("Develop new mini-app", "Practice programming and software development.")
 # nm.get_note("Develop new mini-app")
 
-# nm.get_note("Eat breakfast")  # Doesn't exist - should throw error.
+# nm.get_note("Eat breakfast")  # Doesn't exist - should raise error.
 
 # nm.create_note("Meeting Notes", "Walked through upcoming project deadlines.")
 # nm.get_note("Meeting Notes")
 
 # nm.list_notes()
+
+# nm.delete_note("Eat breakfast") # Doesn't exist - should raise error.
 
 nm.delete_note("Meeting Notes")
 nm.get_note("Meeting Notes")  # Raises KeyError
