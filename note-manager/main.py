@@ -28,24 +28,29 @@ class NoteManager:
     file.write("\n")
     file.close()
 
-    print_out = open("notes.json")
-    print(print_out.read())
-    print_out.close()
+    print("Added new note: " + note)
+
+    # Testing: Read the current list
+    # print_out = open("notes.json")
+    # print(print_out.read())
+    # print_out.close()
 
   def get_note(self, title: str) -> dict:
     """
     Returns a note's details by its title.
     """
-    # Read notes.json (needs to find the correct line by title most likely?)
-    # Maybe read line by line until thei matching string is found? Then stop
+    desired_note = ""
+
     file = open("notes.json")
-    print(file.read())
-    # print line by line, but only ready each string up to len('{"title":') + len(title)
+    for i in file:
+      if i[11:11 + len(title)] == title:
+        desired_note = i
     file.close()
-    # Load the correct variable into:
-    # json.loads(title) or use variable with json.loads(x)
-    # TODO: Implement validation to raise KeyError when trying to get notes that don't exist.
-    # Return title["content"] / x["content"]
+
+    if len(desired_note) == 0:
+      raise KeyError("Note cannot be found as it does not exist.")
+    elif len(desired_note) >= 1:
+      return print(desired_note)
 
 
   def delete_note(self, title: str) -> None:
@@ -64,7 +69,12 @@ class NoteManager:
 nm = NoteManager()
 
 # nm.create_note("Go food shopping", "Buy items from grocery list at the supermarket.")
-nm.get_note("Go food shopping")
+#nm.get_note("Go food shopping")
+
+# nm.create_note("Develop new mini-app", "Practice programming and software development.")
+nm.get_note("Develop new mini-app")
+
+# nm.get_note("Eat breakfast")
 
 # nm.create_note("Meeting Notes", "Walked through upcoming project deadlines.")
 # nm.get_note("Meeting Notes")
