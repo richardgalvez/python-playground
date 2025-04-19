@@ -73,12 +73,11 @@ fc.submit_feedback("bobk", 3)
 #   "ratings_breakdown": {"5": 1, "4": 0, "3": 1, "2": 0, "1": 0 }
 # }
 
-# fc.list_feedback(4)
-# Returns only entries with rating 4 or 5.
+# fc.list_feedback(4)                   # Returns only entries with rating 4 or 5.
 
 ### ERROR TESTING ###
 
-# fc.submit_feedback("", 5)           # Expected: ValueError 1 - username is an empty string
-# fc.submit_feedback("perryp", 0)     # Expected: ValueError 2 - rating number is below 1
-# fc.submit_feedback("heinzd", 20)    # Expected: ValueError 2 - rating number is above 5
+# fc.submit_feedback("", 5)             # Expected: ValueError 1 - username is an empty string
+# fc.submit_feedback("perryp", 0)       # Expected: ValueError 2 - rating number is below 1
+# fc.submit_feedback("heinzd", 20)      # Expected: ValueError 2 - rating number is above 5
 # fc.submit_feedback("", 69)            # Expected: ValueError 1 and 2 (if either one is fixed) - username is an empty string, rating number is above 5
