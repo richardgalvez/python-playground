@@ -1,4 +1,5 @@
 from datetime import datetime
+from pathlib import Path
 import json
 
 class FeedbackCollector:
@@ -21,11 +22,14 @@ class FeedbackCollector:
         elif (rating < 1) or (rating > 5):
             raise ValueError("Rating is invalid (not between 1 and 5).")
         else:
-            # TODO: On first run, initialize feedback.json file if it does not exist.
-            # If feedback.json cannot be found/ does not exist: create file
-
-            with open('feedback.json', 'a') as file:
-                file.write(feedback_item)
+            file_location = Path('./feedback.json')
+            if file_location.is_file() == False:
+                print("File does not exist, creating now.")
+                with open('feedback.json', 'w') as newfile:
+                    newfile.write(feedback_item)
+            else:
+                with open('feedback.json', 'a') as file:
+                    file.write(feedback_item)
 
             print("Feedback added to file.")
 
