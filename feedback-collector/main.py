@@ -2,40 +2,39 @@ from datetime import datetime
 from pathlib import Path
 import json
 
-class FeedbackCollector:
 
+class FeedbackCollector:
     def submit_feedback(self, user: str, rating: int, comments: str = "") -> None:
         """
         Submits feedback with a username, 1-5 start rating, and optional comments.
         """
         timestamp = datetime.now().isoformat()
         feedback_details = {
-                "title": user,
-                "rating": rating,
-                "comments": comments,
-                "timestamp": timestamp
+            "title": user,
+            "rating": rating,
+            "comments": comments,
+            "timestamp": timestamp,
         }
         feedback_item = json.dumps(feedback_details) + "\n"
 
-        if (len(user) <= 0):
+        if len(user) <= 0:
             raise ValueError("The username is not defined (empty string).")
         elif (rating < 1) or (rating > 5):
             raise ValueError("Rating is invalid (not between 1 and 5).")
         else:
-            file_location = Path('./feedback.json')
-            if file_location.is_file() == False:
+            file_location = Path("./feedback.json")
+            if not file_location.is_file():
                 print("File does not exist, creating now.")
-                with open('feedback.json', 'w') as newfile:
+                with open("feedback.json", "w") as newfile:
                     newfile.write(feedback_item)
             else:
-                with open('feedback.json', 'a') as file:
+                with open("feedback.json", "a") as file:
                     file.write(feedback_item)
 
             print("Feedback added to file.")
 
     # TODO: Define helper function/method for the below's similar functionality related to reading the file (_gather_feedback).
-        # TODO: Raise IOError if the file is corrupted or cannot be loaded (in use?).
-
+    # TODO: Raise IOError if the file is corrupted or cannot be loaded (in use?).
 
     def get_feedback_summary(self) -> dict:
         """
