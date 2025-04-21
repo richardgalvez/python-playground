@@ -75,6 +75,7 @@ class FeedbackCollector:
 
         average_rating = rating_sum / total_submissions
 
+        # Create structures for feedback summary.
         ratings_breakdown = {
             "5": five_star,
             "4": four_star,
@@ -96,9 +97,21 @@ class FeedbackCollector:
         """
         Returns all feedback entries with rating >= min_rating.
         """
-        # TODO: Gather ratings data from the helper function.
+        feedback_list = self._gather_feedback()
+        rated_feedback = []
+
         # TODO: Raise ValueError if:
         # min_rating is invalid
+        if (min_rating < 1) or (min_rating > 5):
+            raise ValueError("Provided rating number is invalid (not between 1 and 5).")
+        else:
+            for item in range(len(feedback_list)):
+                rating_number = feedback_list[item]["rating"]
+                if rating_number >= min_rating:
+                    rated_feedback.append(feedback_list[item])
+
+        print(rated_feedback)
+        return rated_feedback
 
 
 ##### TESTING SECTION #####
@@ -127,9 +140,9 @@ fc = FeedbackCollector()
 # fc.submit_feedback("oscarj", 5, "Felt like a king!")
 # fc.submit_feedback("ulyssesk", 2, "They need a lot more training...")
 
-fc.get_feedback_summary()  # Returns dict with summary data.
+# fc.get_feedback_summary()  # Returns dict with summary data.
 
-# fc.list_feedback(4)                   # Returns summary data: {'total': 20, 'average_rating': 3.25, 'ratings_breakdown': {'5': 6, '4': 4, '3': 3, '2': 3, '1': 4}}
+# fc.list_feedback(4)  # Returns summary data: {'total': 20, 'average_rating': 3.25, 'ratings_breakdown': {'5': 6, '4': 4, '3': 3, '2': 3, '1': 4}}
 
 ### ERROR TESTING ###
 
@@ -137,3 +150,4 @@ fc.get_feedback_summary()  # Returns dict with summary data.
 # fc.submit_feedback("perryp", 0)       # Expected: ValueError 2 - rating number is below 1
 # fc.submit_feedback("heinzd", 20)      # Expected: ValueError 2 - rating number is above 5
 # fc.submit_feedback("", 69)            # Expected: ValueError 1 and 2 (if either one is fixed) - username is an empty string, rating number is above 5
+# fc.list_feedback(100)  # Expected: ValueError 3 - rating is not between 1 and 5
