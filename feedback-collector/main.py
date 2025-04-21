@@ -8,6 +8,7 @@ class FeedbackCollector:
         """
         Submits feedback with a username, 1-5 start rating, and optional comments.
         """
+        file_location = Path("./feedback.json")
         timestamp = datetime.now().isoformat()
         feedback_details = {
             "user": user,
@@ -22,25 +23,30 @@ class FeedbackCollector:
         elif (rating < 1) or (rating > 5):
             raise ValueError("Rating is invalid (not between 1 and 5).")
         else:
-            file_location = Path("./feedback.json")
             if not file_location.is_file():
                 print("File does not exist, creating now.")
-                with open("feedback.json", "w") as newfile:
+                with open(file_location, "w") as newfile:
                     newfile.write(feedback_item)
             else:
-                with open("feedback.json", "a") as file:
+                with open(file_location, "a") as file:
                     file.write(feedback_item)
 
             print("Feedback added to file.")
 
     def _gather_feedback(self) -> list[dict]:
         feedback_list = []
-        with open("feedback.json", "r") as file:
+        file_location = Path("./feedback.json")
+
+        if not file_location.is_file():
+            raise IOError(
+                "File cannot be loaded, please make sure it exists and add feedback."
+            )
+
+        with open(file_location, "r") as file:
             for line in file:
                 feedback_list.append(json.loads(line))
 
         return feedback_list
-        # TODO: Raise IOError if the file is corrupted or cannot be loaded (in use or doesn't exist?).
 
     def get_feedback_summary(self) -> dict:
         """
@@ -86,7 +92,7 @@ class FeedbackCollector:
 
         feedback_summary = {
             "total": total_submissions,
-            "average_rating": average_rating,
+            "average_rating": round(average_rating, 2),
             "ratings_breakdown": ratings_breakdown,
         }
 
@@ -100,8 +106,6 @@ class FeedbackCollector:
         feedback_list = self._gather_feedback()
         rated_feedback = []
 
-        # TODO: Raise ValueError if:
-        # min_rating is invalid
         if (min_rating < 1) or (min_rating > 5):
             raise ValueError("Provided rating number is invalid (not between 1 and 5).")
         else:
@@ -140,9 +144,9 @@ fc = FeedbackCollector()
 # fc.submit_feedback("oscarj", 5, "Felt like a king!")
 # fc.submit_feedback("ulyssesk", 2, "They need a lot more training...")
 
-# fc.get_feedback_summary()  # Returns dict with summary data.
+fc.get_feedback_summary()  # Returns dict with summary data or raises IOError if the file does not exist.
 
-# fc.list_feedback(4)  # Returns summary data: {'total': 20, 'average_rating': 3.25, 'ratings_breakdown': {'5': 6, '4': 4, '3': 3, '2': 3, '1': 4}}
+# fc.list_feedback(4)                   # Returns summary data: {'total': 21, 'average_rating': 3.1, 'ratings_breakdown': {'5': 5, '4': 5, '3': 3, '2': 3, '1': 5}}
 
 ### ERROR TESTING ###
 
@@ -150,4 +154,4 @@ fc = FeedbackCollector()
 # fc.submit_feedback("perryp", 0)       # Expected: ValueError 2 - rating number is below 1
 # fc.submit_feedback("heinzd", 20)      # Expected: ValueError 2 - rating number is above 5
 # fc.submit_feedback("", 69)            # Expected: ValueError 1 and 2 (if either one is fixed) - username is an empty string, rating number is above 5
-# fc.list_feedback(100)  # Expected: ValueError 3 - rating is not between 1 and 5
+# fc.list_feedback(100)                 # Expected: ValueError 3 - rating is not between 1 and 5
