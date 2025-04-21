@@ -10,7 +10,7 @@ class FeedbackCollector:
         """
         timestamp = datetime.now().isoformat()
         feedback_details = {
-            "title": user,
+            "user": user,
             "rating": rating,
             "comments": comments,
             "timestamp": timestamp,
@@ -33,8 +33,14 @@ class FeedbackCollector:
 
             print("Feedback added to file.")
 
-    # TODO: Define helper function/method for the below's similar functionality related to reading the file (_gather_feedback).
-    # TODO: Raise IOError if the file is corrupted or cannot be loaded (in use?).
+    def _gather_feedback(self) -> list[dict]:
+        feedback_list = []
+        with open("feedback.json", "r") as file:
+            for line in file:
+                feedback_list.append(json.loads(line))
+
+        return feedback_list
+        # TODO: Raise IOError if the file is corrupted or cannot be loaded (in use?).
 
     def get_feedback_summary(self) -> dict:
         """
@@ -43,16 +49,27 @@ class FeedbackCollector:
         - average rating
         - count per rating level (1-5)
         """
-        # This may need to be in JSON dict format.
-        total = 0
-        average_rating: 0.0
-        ratings_breakdown = []
-        # TODO: Get data from the helper function and put in the required format (dict).
+        # TODO: Get data from helper function.
+        feedback_list = self._gather_feedback()
+
+        print(feedback_list[0]["user"])
+        # TODO: Calculate total amount of submissions (amount of lines).
+
+        # TODO: Calculate the average rating.
+        # Return rating number of a submission.
+        # Return rating numbers of all submissions.
+        # Add values to a variable and divide by the total amount of submissions.
+
+        # TODO: Return data for ratings_breakdown
+        # Calculate the amount if ratings for each rating level (1-5).
+        # Get amount of ratings for 5 star submission.
+        # Get the amount of ratiings for the rest of the levels.
 
     def list_feedback(self, min_rating: int = 1) -> list[dict]:
         """
         Returns all feedback entries with rating >= min_rating.
         """
+        # TODO: Gather ratings data from the helper function.
         # TODO: Raise ValueError if:
         # min_rating is invalid
 
@@ -63,8 +80,11 @@ fc = FeedbackCollector()
 
 fc.submit_feedback("alicej", 5, "Loved the service!")
 fc.submit_feedback("bobk", 3)
+fc.submit_feedback("cooperf", 2, "Not the greatest experience.")
+fc.submit_feedback("davidg", 4)
+fc.submit_feedback("brucew", 1, "Awful service.")
 
-# fc.get_feedback_summary()
+fc.get_feedback_summary()
 # Returns:
 # {
 #   "total": 2,
