@@ -73,24 +73,23 @@ class FeedbackCollector:
             elif rating_number == 1:
                 one_star += 1
 
+        print("total amount of reviews: " + str(total_submissions))
+        print(rating_sum)
+
         average_rating = rating_sum / total_submissions
+        print(average_rating)
 
-        ratings_breakdown = {
-            "5": five_star,
-            "4": four_star,
-            "3": three_star,
-            "2": two_star,
-            "1": one_star,
-        }
-
-        feedback_summary = {
-            "total": total_submissions,
-            "average_rating": average_rating,
-            "ratings_breakdown": ratings_breakdown,
-        }
-
-        print(feedback_summary)
-        return feedback_summary
+        # TODO: Calculate the amount if ratings for each rating level (1-5) as a dict.
+        # Get amount of ratings for 5 star submission.
+        print(
+            "Ratings breakdown: "
+            + str(five_star)
+            + str(four_star)
+            + str(three_star)
+            + str(two_star)
+            + str(one_star)
+        )
+        # Get the amount of ratiings for the rest of the levels.
 
     def list_feedback(self, min_rating: int = 1) -> list[dict]:
         """
@@ -115,21 +114,24 @@ fc = FeedbackCollector()
 # fc.submit_feedback("heinzd", 4, "Good service, but could be better.")
 # fc.submit_feedback("fionag", 3, "Alright, not enough snacks...")
 # fc.submit_feedback("frankr", 1, "It's trash!")
-# fc.submit_feedback("juant", 2)
-# fc.submit_feedback("estherm", 4)
+# fc.submit_feedback("juant", 2, "")
+# fc.submit_feedback("estherm", 4, "")
 # fc.submit_feedback("marias", 1, "Not good...")
 # fc.submit_feedback("winniec", 5, "This is my new spot!")
 # fc.submit_feedback("zackb", 3, "Service needs improvement, the rest is fine.")
-# fc.submit_feedback("yolandae", 5)
-# fc.submit_feedback("malcomy", 4, "Nice place.")
-# fc.submit_feedback("ronw", 1)
-# fc.submit_feedback("loisl", 1, "Avoid at all costs!")
-# fc.submit_feedback("oscarj", 5, "Felt like a king!")
-# fc.submit_feedback("ulyssesk", 2, "They need a lot more training...")
+# fc.submit_feedback("yolandae", 5, "")
+fc.submit_feedback("malcomy", 4, "Nice place.")
+fc.submit_feedback("ronw", 1, "")
 
-fc.get_feedback_summary()  # Returns dict with summary data.
+fc.get_feedback_summary()
+# Returns:
+# {
+#   "total": 2,
+#   "average_rating": 4.0
+#   "ratings_breakdown": {"5": 1, "4": 0, "3": 1, "2": 0, "1": 0 }
+# }
 
-# fc.list_feedback(4)                   # Returns summary data: {'total': 20, 'average_rating': 3.25, 'ratings_breakdown': {'5': 6, '4': 4, '3': 3, '2': 3, '1': 4}}
+# fc.list_feedback(4)                   # Returns only entries with rating 4 or 5.
 
 ### ERROR TESTING ###
 
