@@ -23,19 +23,40 @@ app = Flask(__name__)
 
 # Each view should be rendered using an HTML template with Jinja2
 
+app_name = "Cinquiz"
+
 
 # Welcome screen with a 'Start Quiz' button
 # -> POST or redirect to /quiz
 @app.route("/")
 def home():
-    quiz_name = "Cinquiz"
-    return render_template("index.html", name=quiz_name)
+    return render_template("index.html", app_name=app_name)
+
+
+questions = [
+    {"question": "What is the capital of New York?", "answer": "Albany"},
+    {"question": "Who is the main character of Kung Fu Panda?", "answer": "Po"},
+    {"question": "Where is the United States located?", "answer": "North America"},
+    {"question": "How fast can bees fly on average?", "answer": "50 MPH"},
+    {"question": "What year was YouTube created?", "answer": "2005"},
+]
 
 
 # GET: Displays the current question (one at a time) with a form
 # POST: Submits an answer, updates progress, and loads the next question
-# @app.route("/quiz", methods=['GET','POST'])
+@app.route("/quiz", methods=["GET", "POST"])
+def get_quiz():
+    context = {
+        "app_name": app_name,
+        "title": "Quiz",
+        "questions": questions,
+    }
+    return render_template("quiz.html", **context)
+
 
 # Displays the user's total score + detailed review
 # @app.route("/results")
 # Show - total score, each question's: question, user's answer, visual indicator (check or X) if correct and the correct answer
+
+if __name__ == "__main__":
+    app.run(debug=True)

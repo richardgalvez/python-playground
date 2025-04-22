@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+<ul>
+{% for q in questions %}
+  <li>
+    <em> {{ q.question }} </em>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock content %}

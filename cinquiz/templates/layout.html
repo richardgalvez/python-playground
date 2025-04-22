@@ -4,19 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ app_name }} | Fun Trivia Questions</title>
+    <title>{% block app_name %}{{ app_name }}{% endblock app_name %}</title>
     <link rel="stylesheet" href="./style.css">
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
   </head>
   <body>
-    <main>
-      <h1>Welcome to {{ app_name }}</h1>
-      <a href="./quiz.html"></a>
-        <button class="Quiz">
-          Start Quiz
-        </button>
-    </main>
-    <script src="index.js"></script>
+    {% block content %}
+      <h1> {{ app_name }} </h1>
+    {% endblock content %}
   </body>
 </html>
-
