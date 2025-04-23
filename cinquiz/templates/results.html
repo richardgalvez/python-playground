@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  {{ app_name }} | Results Page
+{% endblock title %}
+
+{% block content %}
+<!-- TODO: Dynamically serve score, but only after validation of quiz completion.
+  Will need an if block/logically <var>lidate in app.py.
+  Users cannot visit /results early.-->
+
+<!-- TODO: Show: Total score, all questions in order and what the user
+  answered, whether it was correct or not, and the correct answer.-->
+<h2>Score: {{ user_score }} out of 5</h2>
+{% endblock content %}

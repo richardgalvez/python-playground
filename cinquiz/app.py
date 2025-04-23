@@ -45,7 +45,7 @@ questions = [
 # GET: Displays the current question (one at a time) with a form
 # POST: Submits an answer, updates progress, and loads the next question
 @app.route("/quiz", methods=["GET", "POST"])
-def get_quiz():
+def quiz():
     context = {
         "app_name": app_name,
         "title": "Quiz",
@@ -55,8 +55,12 @@ def get_quiz():
 
 
 # Displays the user's total score + detailed review
-# @app.route("/results")
-# Show - total score, each question's: question, user's answer, visual indicator (check or X) if correct and the correct answer
+@app.route("/results")
+def results():
+    # Show - total score, each question's: question, user's answer, visual indicator (check or X) if correct and the correct answer
+    context = {"app_name": app_name, "user_score": 5}
+    return render_template("results.html", **context)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
