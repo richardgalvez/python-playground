@@ -21,16 +21,20 @@
   <ul>
   {% for q in questions %}
     <li>
-      <em> {{ q.question }} </em>
+      {{ q.question }}
     </li>
   {% endfor %}
   </ul>
-<h2> Answers to pick:</h2>
-  <ul>
+<form>
+  <p>Answers for question:</p>
   {% for a in answers %}
-    <li>
-      <em> {{ a.answer }} </em>
-    </li>
-    {% endfor %}
-  </ul>
+  <!-- Need a way to loop through numbers for answers (if needed) -->
+  <input type="radio" id="1" name="answer" value="{{ answers|length }}">
+  <label for="1">{{ a.answer }}</label>
+  <br>
+  {% endfor %}
+  <br>
+  <br>
+  <input type="submit" value="Submit Answer">
+</form>
 {% endblock content %}
