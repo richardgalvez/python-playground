@@ -4,9 +4,6 @@
   {{ app_name }} | Quiz
 {% endblock title %}
 
-{% block content %}
-<h1>{{ app_name }} Questions:</h1>
-<ul>
   <!-- TODO: Dynamically serve one question at a time, must contain:
     Current question, form with 4 radio buttons for answers, submit button.
     Questions cannot be skipped ahead, must be answered in sequence.
@@ -15,11 +12,25 @@
   <!--TODO: Selected answer is sent via POST and the pages moves on
     to the next question automatically.-->
     
-   <!-- TODO: If page is refreshed during the quiz, resume at current question. -->
-{% for q in questions %}
-  <li>
-    <em> {{ q.question }} </em>
-  </li>
+  <!-- TODO: If page is refreshed during the quiz, resume at current question. -->
+  
+  <!--TODO: The question has to be based on the counter, answers are in a for loop  -->
+
+{% block content %}
+<h1>{{ app_name }} Questions:</h1>
+  <ul>
+  {% for q in questions %}
+    <li>
+      <em> {{ q.question }} </em>
+    </li>
   {% endfor %}
-</ul>
+  </ul>
+<h2> Answers to pick:</h2>
+  <ul>
+  {% for a in answers %}
+    <li>
+      <em> {{ a.answer }} </em>
+    </li>
+    {% endfor %}
+  </ul>
 {% endblock content %}

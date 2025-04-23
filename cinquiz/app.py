@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect
 
 app = Flask(__name__)
 
@@ -34,11 +34,18 @@ def home():
 
 
 questions = [
-    {"question": "What is the capital of New York?", "answer": "Albany"},
-    {"question": "Who is the main character of Kung Fu Panda?", "answer": "Po"},
-    {"question": "Where is the United States located?", "answer": "North America"},
-    {"question": "How fast can bees fly on average?", "answer": "50 MPH"},
-    {"question": "What year was YouTube created?", "answer": "2005"},
+    {"question": "What is the capital of New York?"},
+    # {"question": "Who is the main character of Kung Fu Panda?", "answer": "Po"},
+    # {"question": "Where is the United States located?", "answer": "North America"},
+    # {"question": "How fast can bees fly on average?", "answer": "50 MPH"},
+    # {"question": "What year was YouTube created?", "answer": "2005"},
+]
+
+answers = [
+    {"answer": "New Delhi"},
+    {"answer": "Albany"},
+    {"answer": "Austin"},
+    {"answer": "Little Rock"},
 ]
 
 
@@ -46,10 +53,17 @@ questions = [
 # POST: Submits an answer, updates progress, and loads the next question
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz():
+    question_counter = 0
+    correct_answers = 0
+    wrong_answers = 0
+
+    # Count how many questions have been answered
+    # TODO: Questions shown need to have 4 answers, each with their own radio buttons
     context = {
         "app_name": app_name,
         "title": "Quiz",
         "questions": questions,
+        "answers": answers,
     }
     return render_template("quiz.html", **context)
 
