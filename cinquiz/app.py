@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, session, redirect
+from random import shuffle
 
 app = Flask(__name__)
 
@@ -57,8 +58,6 @@ def quiz():
     correct_answers = 0
     wrong_answers = 0
 
-    # Count how many questions have been answered
-    # TODO: Questions shown need to have 4 answers, each with their own radio buttons
     context = {
         "app_name": app_name,
         "title": "Quiz",
@@ -67,14 +66,19 @@ def quiz():
     }
 
     if request.method == "POST":
+        shuffle(answers)
         user_answer = request.form.get("answers")
+        # TODO: Find reusable way to check correct answer
         if user_answer == "Albany":
+            print(user_answer)
             correct_answers += 1
+            question_counter += 1
             print("Correct answers: " + str(correct_answers))
         elif user_answer is None:
             print("No answer selected.")
         else:
             wrong_answers += 1
+            question_counter += 1
             print("Wrong Answers: " + str(wrong_answers))
 
     return render_template("quiz.html", **context)
