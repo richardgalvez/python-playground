@@ -65,6 +65,18 @@ def quiz():
         "questions": questions,
         "answers": answers,
     }
+
+    if request.method == "POST":
+        user_answer = request.form.get("answers")
+        if user_answer == "Albany":
+            correct_answers += 1
+            print("Correct answers: " + str(correct_answers))
+        elif user_answer is None:
+            print("No answer selected.")
+        else:
+            wrong_answers += 1
+            print("Wrong Answers: " + str(wrong_answers))
+
     return render_template("quiz.html", **context)
 
 

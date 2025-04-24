@@ -5,7 +5,6 @@
 {% endblock title %}
 
   <!-- TODO: Dynamically serve one question at a time, must contain:
-    Current question, form with 4 radio buttons for answers, submit button.
     Questions cannot be skipped ahead, must be answered in sequence.
     Prevent quiz reset unless user finishes or returns to homepage.-->
     
@@ -21,13 +20,12 @@
   {% for q in questions %}
     {{loop.index}}. {{ q.question }}
   {% endfor %}
-<form>
-  <p>Answers for question:</p>
-  {% for a in answers %}
-    <input type="radio" id="{{loop.index}}" name="answer{{loop.index}}" value="{{ loop.index }}">
-    <label for="{{loop.index}}">{{ a.answer }}</label>
-    <br>
-  {% endfor %}
+<form method="POST" action="/quiz">
+  <br>
+    {% for a in answers %}
+    <input type="radio" id="answer{{loop.index}}" name="answers" value={{ a.answer }}>
+      <label for="answer{{loop.index}}">{{ a.answer }}</label><br>
+    {% endfor %}
   <br>
   <br>
   <input type="submit" value="Submit Answer">
