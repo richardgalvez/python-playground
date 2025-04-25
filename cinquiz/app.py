@@ -60,12 +60,15 @@ def quiz():
     correct_answers = 0
     wrong_answers = 0
 
+    # TODO: Refactor section to use quiz_data list
     context = {
-        "app_name": app_name,
+        "app_nameame": app_name,
         "title": "Quiz",
         "questions": questions,
         "answers": answers,
     }
+    # Test print to get data
+    print(quiz_data[0][0]["question_text"])
 
     if request.method == "POST":
         # TODO: Display one question per page
