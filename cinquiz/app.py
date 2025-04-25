@@ -3,32 +3,9 @@ from random import shuffle
 
 app = Flask(__name__)
 
-# -- Quiz Data
-# Use a list of 5 fixed trivia questions, each have:
-# question_text: str
-# options: list of 4 answer strings
-# correct_option_index: int (0-based index for the correct answer)
-# TODO: Try via Python first, then use the questions.json file
-
-# -- Core Logic:
-# One question per page
-# When an answer is selected and submitted, store in Flask's session
-# Move to the next question automatically on submission
-# If the user completes all questions, redirect to /results
-
-# -- Input validation & Flow:
-# Questions must be answered in sequence
-# Users can't skip ahead or visit /results early
-# If they refresh during the quiz, resumes at the current question
-# Prevent quiz reset unless the user finishes or returns to the homepage
-
-# Each view should be rendered using an HTML template with Jinja2
-
 app_name = "Cinquiz"
 
 
-# Welcome screen with a 'Start Quiz' button
-# -> POST or redirect to /quiz
 @app.route("/")
 def home():
     return render_template("index.html", app_name=app_name)
@@ -36,10 +13,6 @@ def home():
 
 questions = [
     {"question": "What is the capital of New York?"},
-    # {"question": "Who is the main character of Kung Fu Panda?", "answer": "Po"},
-    # {"question": "Where is the United States located?", "answer": "North America"},
-    # {"question": "How fast can bees fly on average?", "answer": "50 MPH"},
-    # {"question": "What year was YouTube created?", "answer": "2005"},
 ]
 
 answers = [
@@ -49,7 +22,36 @@ answers = [
     {"answer": "Little Rock"},
 ]
 
+quiz_data = [
+    [
+        {"question_text": "What is the capital of New York?"},
+        {"options": ["New Delhi", "Albany", "Austin", "Little Rock"]},
+        {"correct_option_index": 1},
+    ],
+    [
+        {"question_text": "Who is the main character of Kung Fu Panda?"},
+        {"options": ["Po", "Jill", "Moe", "Fifi"]},
+        {"correct_option_index": 0},
+    ],
+    [
+        {"question_text": "When was the United States founded?"},
+        {"options": ["1929", "1886", "12 B.C.", "1776"]},
+        {"correct_option_index": 3},
+    ],
+    [
+        {"question_text": "How fast can bees fly on average?"},
+        {"options": ["102MPH", "1MPH", "37MPH", "15MPH"]},
+        {"correct_option_index": 3},
+    ],
+    [
+        {"question_text": "Where is the car brand Toyota from?"},
+        {"options": ["Africa", "Korea", "Japan", "China"]},
+        {"correct_option_index": 2},
+    ],
+]
 
+
+# TODO: Prevent quiz reset unless the user finishes or returns to the homepage
 # GET: Displays the current question (one at a time) with a form
 # POST: Submits an answer, updates progress, and loads the next question
 @app.route("/quiz", methods=["GET", "POST"])
@@ -66,11 +68,14 @@ def quiz():
     }
 
     if request.method == "POST":
-        shuffle(answers)
+        # TODO: Display one question per page
+        # TODO: Store sumbitted answer(s) in Flask's session
+        # TODO: If refreshed, resumes at the current question
+        # TODO: Move to the next question automatically on submission
+        # TODO: Questions must be answered in sequence
         user_answer = request.form.get("answers")
-        # TODO: Find reusable way to check correct answer
-        if user_answer == "Albany":
-            print(user_answer)
+        # TODO: Improve reusable way to check correct answer
+        if user_answer == answers[1]["answer"]:
             correct_answers += 1
             question_counter += 1
             print("Correct answers: " + str(correct_answers))
@@ -80,11 +85,13 @@ def quiz():
             wrong_answers += 1
             question_counter += 1
             print("Wrong Answers: " + str(wrong_answers))
+        # TODO: If the user completes all questions, redirect to /results
 
     return render_template("quiz.html", **context)
 
 
 # Displays the user's total score + detailed review
+# Users can't skip ahead or visit /results early
 @app.route("/results")
 def results():
     # Show - total score, each question's: question, user's answer, visual indicator (check or X) if correct and the correct answer
