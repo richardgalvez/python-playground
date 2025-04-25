@@ -16,18 +16,20 @@
   <!--TODO: The question has to be based on the counter, answers are in a for loop  -->
 
 {% block content %}
-<h1>{{ app_name }} Questions:</h1>
   {% for q in questions %}
-    {{loop.index}}. {{ q.question }}
+    <h1>Question {{loop.index}}:</h1>
+    {{ q.question_text }}
+  <form method="POST" action="/quiz">
+    <br>
+      {% for a in answers[loop.index0] %}
+      <!-- Probably need an IF statement that counts current
+      index and will set 'name' to keep buttons in same question -->
+      <input type="radio" id="answer{{loop.index}}" name="answer" value={{ a }}>
+        <label for="answer{{loop.index}}">{{ a }}</label><br>
+      {% endfor %}
+    <br>
+    <br>
+    <input type="submit" value="Submit Answer">
+  </form>
   {% endfor %}
-<form method="POST" action="/quiz">
-  <br>
-    {% for a in answers %}
-    <input type="radio" id="answer{{loop.index}}" name="answers" value={{ a.answer }}>
-    <label for="answer{{loop.index}}">{{ a.answer }}</label><br>
-    {% endfor %}
-  <br>
-  <br>
-  <input type="submit" value="Submit Answer">
-</form>
 {% endblock content %}

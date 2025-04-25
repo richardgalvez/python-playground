@@ -11,16 +11,16 @@ def home():
     return render_template("index.html", app_name=app_name)
 
 
-questions = [
-    {"question": "What is the capital of New York?"},
-]
+# questions = [
+#    {"question": "What is the capital of New York?"},
+# ]
 
-answers = [
-    {"answer": "New Delhi"},
-    {"answer": "Albany"},
-    {"answer": "Austin"},
-    {"answer": "Little Rock"},
-]
+# answers = [
+#     {"answer": "New Delhi"},
+#     {"answer": "Albany"},
+#     {"answer": "Austin"},
+#     {"answer": "Little Rock"},
+# ]
 
 quiz_data = [
     [
@@ -59,19 +59,25 @@ def quiz():
     question_counter = 0
     correct_answers = 0
     wrong_answers = 0
+    questions = []
+    answers = []
+
+    for q in quiz_data:
+        questions.append(q[0])
+    for a in quiz_data:
+        answers.append(a[1]["options"])
 
     # TODO: Refactor section to use quiz_data list
     context = {
-        "app_nameame": app_name,
+        "app_name": app_name,
         "title": "Quiz",
         "questions": questions,
         "answers": answers,
+        "quiz_data": quiz_data,
     }
-    # Test print to get data
-    print(quiz_data[0][0]["question_text"])
 
     if request.method == "POST":
-        # TODO: Display one question per page
+        # TODO: Display one question per page (select data to serve from array dynamically)
         # TODO: Store sumbitted answer(s) in Flask's session
         # TODO: If refreshed, resumes at the current question
         # TODO: Move to the next question automatically on submission
