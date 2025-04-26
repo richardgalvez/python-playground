@@ -11,17 +11,6 @@ def home():
     return render_template("index.html", app_name=app_name)
 
 
-# questions = [
-#    {"question": "What is the capital of New York?"},
-# ]
-
-# answers = [
-#     {"answer": "New Delhi"},
-#     {"answer": "Albany"},
-#     {"answer": "Austin"},
-#     {"answer": "Little Rock"},
-# ]
-
 quiz_data = [
     [
         {"question_text": "What is the capital of New York?"},
