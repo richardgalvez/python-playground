@@ -17,7 +17,7 @@
 
 {% block content %}
   {% for q in questions %}
-    <h1>Question {{loop.index}}:</h1>
+    <br>
     {{ q.question_text }}
   <form method="POST" action="/quiz">
     <br>
@@ -27,7 +27,6 @@
       <input type="radio" id="answer{{loop.index}}" name="answer" value={{ a }}>
         <label for="answer{{loop.index}}">{{ a }}</label><br>
       {% endfor %}
-    <br>
     <br>
     <input type="submit" value="Submit Answer">
   </form>

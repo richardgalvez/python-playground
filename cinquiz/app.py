@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session, redirect
-from random import shuffle
+from pathlib import Path
+import json
 
 app = Flask(__name__)
 
@@ -11,35 +12,6 @@ def home():
     return render_template("index.html", app_name=app_name)
 
 
-quiz_data = [
-    [
-        {"question_text": "What is the capital of New York?"},
-        {"options": ["New Delhi", "Albany", "Austin", "Little Rock"]},
-        {"correct_option_index": 1},
-    ],
-    [
-        {"question_text": "Who is the main character of Kung Fu Panda?"},
-        {"options": ["Po", "Jill", "Moe", "Fifi"]},
-        {"correct_option_index": 0},
-    ],
-    [
-        {"question_text": "When was the United States founded?"},
-        {"options": ["1929", "1886", "12 B.C.", "1776"]},
-        {"correct_option_index": 3},
-    ],
-    [
-        {"question_text": "How fast can bees fly on average?"},
-        {"options": ["102MPH", "1MPH", "37MPH", "15MPH"]},
-        {"correct_option_index": 3},
-    ],
-    [
-        {"question_text": "Where is the car brand Toyota from?"},
-        {"options": ["Africa", "Korea", "Japan", "China"]},
-        {"correct_option_index": 2},
-    ],
-]
-
-
 # TODO: Prevent quiz reset unless the user finishes or returns to the homepage
 # GET: Displays the current question (one at a time) with a form
 # POST: Submits an answer, updates progress, and loads the next question
@@ -48,31 +20,45 @@ def quiz():
     question_counter = 0
     correct_answers = 0
     wrong_answers = 0
+    quiz_data = []
     questions = []
     answers = []
+    correct_index = []
+    file_location = Path("./questions.json")
+
+    # Load from questions.json
+    if not file_location.is_file():
+        raise IOError(
+            "File cannot be loaded. Please makes sure it exists and contains question data."
+        )
+
+    with open(file_location, "r") as file:
+        for line in file:
+            quiz_data.append(json.loads(line))
 
     for q in quiz_data:
         questions.append(q[0])
     for a in quiz_data:
         answers.append(a[1]["options"])
+    for c in quiz_data:
+        correct_index.append(c[2]["correct_option_index"])
 
-    # TODO: Refactor section to use quiz_data list
     context = {
         "app_name": app_name,
         "title": "Quiz",
         "questions": questions,
         "answers": answers,
-        "quiz_data": quiz_data,
     }
 
     if request.method == "POST":
-        # TODO: Display one question per page (select data to serve from array dynamically)
+        # TODO: Display one question per page (select data from array/question.json
+        # to serve dynamically - based on how many questions have been answered?)
         # TODO: Store sumbitted answer(s) in Flask's session
         # TODO: If refreshed, resumes at the current question
         # TODO: Move to the next question automatically on submission
         # TODO: Questions must be answered in sequence
         user_answer = request.form.get("answers")
-        # TODO: Improve reusable way to check correct answer
+        # TODO: Get index of correct answer and compare to user_answer
         if user_answer == answers[1]["answer"]:
             correct_answers += 1
             question_counter += 1
