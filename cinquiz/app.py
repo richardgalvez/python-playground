@@ -43,11 +43,7 @@ def quiz():
         answers.append(index_format[1]["options"])
         correct_index.append(index_format[2]["correct_option_index"])
 
-    # load_question(1)
-    # load_question(2)
-    # load_question(3)
-    # load_question(4)
-    # load_question(5)
+    load_question(1)
 
     context = {
         "app_name": app_name,
@@ -62,10 +58,10 @@ def quiz():
         # TODO: Store submitted answer(s) in Flask's session
         # TODO: If refreshed, resumes at the current question
         # TODO: Move to the next question automatically on submission
-        # TODO: Questions must be answered in sequence
         user_answer = request.form.get("answers")
-        # TODO: Get index of correct answer and compare to user_answer
-        if user_answer == answers[1]["answer"]:
+        # Get user's answer and compare to the correct option's designated index number.
+        print(user_answer)
+        if user_answer == answers[0][correct_index[0]]:
             correct_answers += 1
             question_counter += 1
             print("Correct answers: " + str(correct_answers))
