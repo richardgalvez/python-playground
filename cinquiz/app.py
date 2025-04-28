@@ -17,14 +17,14 @@ def home():
 # POST: Submits an answer, updates progress, and loads the next question
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz():
-    question_counter = 0
-    correct_answers = 0
-    wrong_answers = 0
+    file_location = Path("./questions.json")
     quiz_data = []
     questions = []
     answers = []
     correct_index = []
-    file_location = Path("./questions.json")
+    question_counter = 0
+    correct_answers = 0
+    wrong_answers = 0
 
     # Load from questions.json
     if not file_location.is_file():
@@ -36,12 +36,21 @@ def quiz():
         for line in file:
             quiz_data.append(json.loads(line))
 
-    for q in quiz_data:
-        questions.append(q[0])
-    for a in quiz_data:
-        answers.append(a[1]["options"])
-    for c in quiz_data:
-        correct_index.append(c[2]["correct_option_index"])
+    # def load_data(question_num, option, correct_option_index) -> None:
+    def load_data() -> None:
+        for d in quiz_data:
+            questions.append(d[0])
+            answers.append(d[1]["options"])
+            correct_index.append(d[2]["correct_option_index"])
+
+    load_data()
+
+    # for q in quiz_data:
+    # questions.append(q[0])
+    # for a in quiz_data:
+    #     answers.append(a[1]["options"])
+    # for c in quiz_data:
+    #     correct_index.append(c[2]["correct_option_index"])
 
     context = {
         "app_name": app_name,
