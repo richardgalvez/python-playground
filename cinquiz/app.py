@@ -26,7 +26,7 @@ def quiz():
     correct_answers = 0
     wrong_answers = 0
 
-    # Load from questions.json
+    # Load from questions.json, then load those as needed.
     if not file_location.is_file():
         raise IOError(
             "File cannot be loaded. Please makes sure it exists and contains question data."
@@ -36,21 +36,18 @@ def quiz():
         for line in file:
             quiz_data.append(json.loads(line))
 
-    # def load_data(question_num, option, correct_option_index) -> None:
-    def load_data() -> None:
-        for d in quiz_data:
-            questions.append(d[0])
-            answers.append(d[1]["options"])
-            correct_index.append(d[2]["correct_option_index"])
+    def load_question(question_num: int) -> None:
+        index_format = quiz_data[question_num - 1]
 
-    load_data()
+        questions.append(index_format[0])
+        answers.append(index_format[1]["options"])
+        correct_index.append(index_format[2]["correct_option_index"])
 
-    # for q in quiz_data:
-    # questions.append(q[0])
-    # for a in quiz_data:
-    #     answers.append(a[1]["options"])
-    # for c in quiz_data:
-    #     correct_index.append(c[2]["correct_option_index"])
+    # load_question(1)
+    # load_question(2)
+    # load_question(3)
+    # load_question(4)
+    # load_question(5)
 
     context = {
         "app_name": app_name,
@@ -62,7 +59,7 @@ def quiz():
     if request.method == "POST":
         # TODO: Display one question per page (select data from array/question.json
         # to serve dynamically - based on how many questions have been answered?)
-        # TODO: Store sumbitted answer(s) in Flask's session
+        # TODO: Store submitted answer(s) in Flask's session
         # TODO: If refreshed, resumes at the current question
         # TODO: Move to the next question automatically on submission
         # TODO: Questions must be answered in sequence
