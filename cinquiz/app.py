@@ -6,6 +6,8 @@ app = Flask(__name__)
 
 app_name = "Cinquiz"
 
+app.secret_key = "CINQUIZ_SECRET_KEY"
+
 
 @app.route("/")
 def home():
@@ -22,9 +24,17 @@ def quiz():
     questions = []
     answers = []
     correct_index = []
-    question_counter = 0
+    question_counter = 1
     correct_answers = 0
     wrong_answers = 0
+    quiz_complete = False
+
+    context = {
+        "app_name": app_name,
+        "title": "Quiz",
+        "questions": questions,
+        "answers": answers,
+    }
 
     # Load from questions.json, then load those as needed.
     if not file_location.is_file():
@@ -39,18 +49,16 @@ def quiz():
     def load_question(question_num: int) -> None:
         index_format = quiz_data[question_num - 1]
 
+        # Clear question already loaded.
+        questions.clear()
+        answers.clear()
+        correct_index.clear()
+
         questions.append(index_format[0])
         answers.append(index_format[1]["options"])
         correct_index.append(index_format[2]["correct_option_index"])
 
-    load_question(1)
-
-    context = {
-        "app_name": app_name,
-        "title": "Quiz",
-        "questions": questions,
-        "answers": answers,
-    }
+    load_question(question_counter)
 
     if request.method == "POST":
         # TODO: Display one question per page (select data from array/question.json
@@ -58,19 +66,28 @@ def quiz():
         # TODO: Store submitted answer(s) in Flask's session
         # TODO: If refreshed, resumes at the current question
         # TODO: Move to the next question automatically on submission
-        user_answer = request.form.get("answers")
-        # Get user's answer and compare to the correct option's designated index number.
+        user_answer = request.form.get("answer")
+        session["answer"] = request.form["answer"]
+        correct_index_option = answers[0][correct_index[0]]
+
+        question_counter += 1
+        session["question_number"] = question_counter
+
+        print(session)
+        print(question_counter)
         print(user_answer)
-        if user_answer == answers[0][correct_index[0]]:
+
+        # Get user's answer and compare to the correct option's designated index number.
+        if user_answer == correct_index_option:
             correct_answers += 1
-            question_counter += 1
             print("Correct answers: " + str(correct_answers))
+            load_question(question_counter)
         elif user_answer is None:
             print("No answer selected.")
-        else:
+        elif user_answer != correct_index_option:
             wrong_answers += 1
-            question_counter += 1
             print("Wrong Answers: " + str(wrong_answers))
+            load_question(question_counter)
         # TODO: If the user completes all questions, redirect to /results
 
     return render_template("quiz.html", **context)
