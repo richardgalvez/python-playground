@@ -1,105 +1,80 @@
-from flask import Flask, render_template, request, session, redirect
-from pathlib import Path
-import json
+from flask import Flask, render_template, request, redirect, url_for, session
+from quiz import Cinquiz, Question
 
 app = Flask(__name__)
+app.secret_key = "CINQUIZ_KEY"
 
-app_name = "Cinquiz"
+cq = Cinquiz()
 
-app.secret_key = "CINQUIZ_SECRET_KEY"
+cq.add_question(
+    Question(
+        "Q1: What is the capital of New York?",
+        ["Trenton", "Albany", "Austin", "Atlanta"],
+        1,
+    )
+)
+cq.add_question(
+    Question(
+        "Q2: Who is the main character of Kung Fu Panda?",
+        ["Po", "Jill", "Moe", "Fifi"],
+        0,
+    )
+)
+cq.add_question(
+    Question(
+        "Q3: When was the United States founded?", ["1929", "1886", "1492", "1776"], 3
+    )
+)
+cq.add_question(
+    Question(
+        "Q4: How fast can bees fly on average?", ["102MPH", "4MPH", "27MPH", "15MPH"], 3
+    )
+)
+cq.add_question(
+    Question(
+        "Q5: Where does the car brand Toyota originate from?",
+        ["Africa", "India", "Japan", "China"],
+        2,
+    )
+)
 
 
 @app.route("/")
-def home():
-    return render_template("index.html", app_name=app_name)
+def index():
+    session["current_question"] = 0
+    session["score"] = 0
+    return redirect(url_for("quiz"))
 
 
-# TODO: Prevent quiz reset unless the user finishes or returns to the homepage
-# GET: Displays the current question (one at a time) with a form
-# POST: Submits an answer, updates progress, and loads the next question
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz():
-    file_location = Path("./questions.json")
-    quiz_data = []
-    questions = []
-    answers = []
-    correct_index = []
-    question_counter = 1
-    correct_answers = 0
-    wrong_answers = 0
-    quiz_complete = False
-
-    context = {
-        "app_name": app_name,
-        "title": "Quiz",
-        "questions": questions,
-        "answers": answers,
-    }
-
-    # Load from questions.json, then load those as needed.
-    if not file_location.is_file():
-        raise IOError(
-            "File cannot be loaded. Please makes sure it exists and contains question data."
-        )
-
-    with open(file_location, "r") as file:
-        for line in file:
-            quiz_data.append(json.loads(line))
-
-    def load_question(question_num: int) -> None:
-        index_format = quiz_data[question_num - 1]
-
-        # Clear question already loaded.
-        questions.clear()
-        answers.clear()
-        correct_index.clear()
-
-        questions.append(index_format[0])
-        answers.append(index_format[1]["options"])
-        correct_index.append(index_format[2]["correct_option_index"])
-
-    load_question(question_counter)
-
     if request.method == "POST":
-        # TODO: Display one question per page (select data from array/question.json
-        # to serve dynamically - based on how many questions have been answered?)
-        # TODO: Store submitted answer(s) in Flask's session
-        # TODO: If refreshed, resumes at the current question
-        # TODO: Move to the next question automatically on submission
-        user_answer = request.form.get("answer")
-        session["answer"] = request.form["answer"]
-        correct_index_option = answers[0][correct_index[0]]
+        selected_option = request.form.get("option")
+        current_question_index = session.get("current_question")
+        if selected_option:
+            correct_option = cq.questions[current_question_index].correct_option_index
+            if int(selected_option) == correct_option:
+                session["score"] += 1
 
-        question_counter += 1
-        session["question_number"] = question_counter
+        session["current_question"] += 1
+        if session["current_question"] >= len(cq.questions):
+            return redirect(url_for("results"))
 
-        print(session)
-        print(question_counter)
-        print(user_answer)
-
-        # Get user's answer and compare to the correct option's designated index number.
-        if user_answer == correct_index_option:
-            correct_answers += 1
-            print("Correct answers: " + str(correct_answers))
-            load_question(question_counter)
-        elif user_answer is None:
-            print("No answer selected.")
-        elif user_answer != correct_index_option:
-            wrong_answers += 1
-            print("Wrong Answers: " + str(wrong_answers))
-            load_question(question_counter)
-        # TODO: If the user completes all questions, redirect to /results
-
-    return render_template("quiz.html", **context)
+    current_question_index = session.get("current_question")
+    question = cq.questions[current_question_index]
+    return render_template(
+        "quiz.html",
+        question=question,
+        question_index=current_question_index + 1,
+        total_questions=len(cq.questions),
+    )
 
 
-# Displays the user's total score + detailed review
-# Users can't skip ahead or visit /results early
 @app.route("/results")
 def results():
-    # Show - total score, each question's: question, user's answer, visual indicator (check or X) if correct and the correct answer
-    context = {"app_name": app_name, "user_score": 5}
-    return render_template("results.html", **context)
+    score = session.get("score")
+    total_questions = len(quiz.questions)
+    return f"<h1>Your Score: {score}/{total_questions}</h1>"
 
 
 if __name__ == "__main__":

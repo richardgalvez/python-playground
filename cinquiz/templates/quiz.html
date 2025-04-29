@@ -1,34 +1,27 @@
-{% extends "layout.html" %}
-
-{% block title %}
-  {{ app_name }} | Quiz
-{% endblock title %}
-
-  <!-- TODO: Dynamically serve one question at a time, must contain:
-    Questions cannot be skipped ahead, must be answered in sequence.
-    Prevent quiz reset unless user finishes or returns to homepage.-->
-    
-  <!--TODO: Selected answer is sent via POST and the pages moves on
-    to the next question automatically.-->
-    
-  <!-- TODO: If page is refreshed during the quiz, resume at current question. -->
-  
-  <!--TODO: The question has to be based on the counter, answers are in a for loop  -->
-
-{% block content %}
-  {% for q in questions %}
-    <br>
-    {{ q.question_text }}
-  <form method="POST" action="/quiz">
-    <br>
-      {% for a in answers[loop.index0] %}
-      <!-- Probably need an IF statement that counts current
-      index and will set 'name' to keep buttons in same question -->
-      <input type="radio" id="answer{{loop.index}}" name="answer" value={{ a }}>
-        <label for="answer{{loop.index}}">{{ a }}</label><br>
-      {% endfor %}
-    <br>
-    <input type="submit" value="Submit Answer">
-  </form>
-  {% endfor %}
-{% endblock content %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cinquiz</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="mb-4">Cinquiz</h1>
+      <form method="POST">
+        <h3>{{ question.text }}</h3>
+        <div class="form-group">
+          {% for option in question.options %}
+            <div class="form-check">
+              <input type="radio" class="form-check-input" name="option" id="{{ loop,index0 }}" value="option{{ loop.index0 }}" required>
+              <label for="option{{ loop.index0 }}" class="form-check-label">{{ option }}</label>
+            </div>
+          {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Next</button>
+      </form>
+      <p class="mt-3">Question {{ question_index }} of {{ total_questions }}</p>
+    </div>
+  </body>
+</html>
