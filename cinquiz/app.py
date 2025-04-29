@@ -51,7 +51,7 @@ def quiz():
     if request.method == "POST":
         selected_option = request.form.get("option")
         current_question_index = session.get("current_question")
-        if selected_option:
+        if selected_option is not None:
             correct_option = cq.questions[current_question_index].correct_option_index
             if int(selected_option) == correct_option:
                 session["score"] += 1
@@ -73,7 +73,7 @@ def quiz():
 @app.route("/results")
 def results():
     score = session.get("score")
-    total_questions = len(quiz.questions)
+    total_questions = len(cq.questions)
     return f"<h1>Your Score: {score}/{total_questions}</h1>"
 
 

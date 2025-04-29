@@ -14,7 +14,7 @@
         <div class="form-group">
           {% for option in question.options %}
             <div class="form-check">
-              <input type="radio" class="form-check-input" name="option" id="{{ loop,index0 }}" value="option{{ loop.index0 }}" required>
+              <input type="radio" class="form-check-input" name="option" id="option{{ loop,index0 }}" value="{{ loop.index0 }}" required>
               <label for="option{{ loop.index0 }}" class="form-check-label">{{ option }}</label>
             </div>
           {% endfor %}
