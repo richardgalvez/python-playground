@@ -6,10 +6,18 @@
 
 {% block content %}
 <!-- TODO: Dynamically serve score, but only after validation of quiz completion.
-  Will need an if block/logically <var>lidate in app.py.
-  Users cannot visit /results early.-->
+  Will need an if block/logically validate in app.py.-->
 
 <!-- TODO: Show: Total score, all questions in order and what the user
   answered, whether it was correct or not, and the correct answer.-->
-<h2>Score: {{ score }}/{{ total_questions }}</h2>
+
+  <div class="container mt-5">
+  {% for q in question %}
+    <h2>{{ q.text }} </<h2>
+    {% set correct_option = q.correct_option_index %}
+      <h3>Correct Answer: {{ q.options[correct_option] }}</h3>
+      <br>
+  {% endfor %}
+    <h1 class="mb-4">Score: {{ score }} out of {{ total_questions }}</h1>
+  <div>
 {% endblock content %}

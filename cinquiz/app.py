@@ -69,7 +69,13 @@ def quiz():
 def results():
     score = session.get("score")
     total_questions = len(cq.questions)
-    return render_template("results.html", score=score, total_questions=total_questions)
+    question = cq.questions
+    return render_template(
+        "results.html",
+        score=score,
+        total_questions=total_questions,
+        question=question,
+    )
 
 
 if __name__ == "__main__":
