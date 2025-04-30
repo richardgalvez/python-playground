@@ -50,7 +50,7 @@ def index():
 def quiz():
     if request.method == "POST":
         selected_option = request.form.get("option")
-        current_question_index = session.get("current_question")
+        current_question_index: int = session.get("current_question", 0)
         if selected_option is not None:
             correct_option = cq.questions[current_question_index].correct_option_index
             if int(selected_option) == correct_option:
@@ -60,12 +60,12 @@ def quiz():
         if session["current_question"] >= len(cq.questions):
             return redirect(url_for("results"))
 
-    current_question_index = session.get("current_question")
+    current_question_index: int = session.get("current_question", 0)
     question = cq.questions[current_question_index]
     return render_template(
         "quiz.html",
         question=question,
-        question_index=current_question_index + 1,
+        question_index=(current_question_index + 1),
         total_questions=len(cq.questions),
     )
 
