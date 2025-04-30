@@ -5,19 +5,22 @@
 {% endblock title %}
 
 {% block content %}
-<!-- TODO: Dynamically serve score, but only after validation of quiz completion.
-  Will need an if block/logically validate in app.py.-->
-
+  <div class="container mt-5">
+  {% if score < 5 %}
+  <h2>You haven't started or completed the quiz yet.</h2>
+  <br>
+  <h2>Please go Home and start the quiz from there.</h2>
+  
 <!-- TODO: Show: Total score, all questions in order and what the user
   answered, whether it was correct or not, and the correct answer.-->
-
-  <div class="container mt-5">
-  {% for q in question %}
-    <h2>{{ q.text }} </<h2>
-    {% set correct_option = q.correct_option_index %}
-      <h3>Correct Answer: {{ q.options[correct_option] }}</h3>
-      <br>
-  {% endfor %}
-    <h1 class="mb-4">Score: {{ score }} out of {{ total_questions }}</h1>
-  <div>
+  {% else %}
+    {% for q in question %}
+      <h2>{{ q.text }} </<h2>
+      {% set correct_option = q.correct_option_index %}
+        <h3>Correct Answer: {{ q.options[correct_option] }}</h3>
+        <br>
+    {% endfor %}
+      <h1 class="mb-4">Score: {{ score }} out of {{ total_questions }}</h1>
+    <div>
+  {% endif %}
 {% endblock content %}
