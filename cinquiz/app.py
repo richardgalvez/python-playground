@@ -40,10 +40,10 @@ cq.add_question(
 
 
 @app.route("/")
-def index():
+def home():
     session["current_question"] = 0
     session["score"] = 0
-    return redirect(url_for("quiz"))
+    return render_template("index.html")
 
 
 @app.route("/quiz", methods=["GET", "POST"])
