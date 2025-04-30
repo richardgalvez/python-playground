@@ -15,7 +15,7 @@ cq.add_question(
 )
 cq.add_question(
     Question(
-        "Q2: Who is the main character of Kung Fu Panda?",
+        "Q2: Who is the main character in 'Kung Fu Panda'?",
         ["Po", "Jill", "Moe", "Fifi"],
         0,
     )
@@ -62,19 +62,14 @@ def quiz():
 
     current_question_index: int = session.get("current_question", 0)
     question = cq.questions[current_question_index]
-    return render_template(
-        "quiz.html",
-        question=question,
-        question_index=(current_question_index + 1),
-        total_questions=len(cq.questions),
-    )
+    return render_template("quiz.html", question=question)
 
 
 @app.route("/results")
 def results():
     score = session.get("score")
     total_questions = len(cq.questions)
-    return f"<h1>Your Score: {score}/{total_questions}</h1>"
+    return render_template("results.html", score=score, total_questions=total_questions)
 
 
 if __name__ == "__main__":
