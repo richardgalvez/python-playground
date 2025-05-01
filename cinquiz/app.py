@@ -54,9 +54,6 @@ def quiz():
         current_question_index: int = session.get("current_question", 0)
         if selected_option is not None:
             correct_option = cq.questions[current_question_index].correct_option_index
-            correct_option_text = cq.questions[current_question_index].options[
-                correct_option
-            ]
             user_option_text = cq.questions[current_question_index].options[
                 int(selected_option)
             ]
@@ -66,7 +63,6 @@ def quiz():
 
         session["current_question"] += 1
         if session["current_question"] >= len(cq.questions):
-            print(session["user_answers"])
             return redirect(url_for("results"))
 
     current_question_index: int = session.get("current_question", 0)
@@ -85,6 +81,7 @@ def results():
         total_questions=total_questions,
         question=question,
         current_question=session["current_question"],
+        user_answers=session["user_answers"],
     )
 
 

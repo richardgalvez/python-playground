@@ -1,6 +1,5 @@
 <nav>
-  <!-- "results to be removed after testing - needed to view quickly." -->
-  {% for menu_item in ["home", "results"] %}
+  {% for menu_item in ["home"] %}
     <a href="{{ url_for(menu_item) }}"> {{ menu_item | capitalize }}</a>
   {% endfor %}
 </nav>
