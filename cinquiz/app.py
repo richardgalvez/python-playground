@@ -43,6 +43,7 @@ cq.add_question(
 def home():
     session["current_question"] = 0
     session["score"] = 0
+    session["user_answers"] = []
     return render_template("index.html")
 
 
@@ -53,11 +54,19 @@ def quiz():
         current_question_index: int = session.get("current_question", 0)
         if selected_option is not None:
             correct_option = cq.questions[current_question_index].correct_option_index
+            correct_option_text = cq.questions[current_question_index].options[
+                correct_option
+            ]
+            user_option_text = cq.questions[current_question_index].options[
+                int(selected_option)
+            ]
+            session["user_answers"].append(user_option_text)
             if int(selected_option) == correct_option:
                 session["score"] += 1
 
         session["current_question"] += 1
         if session["current_question"] >= len(cq.questions):
+            print(session["user_answers"])
             return redirect(url_for("results"))
 
     current_question_index: int = session.get("current_question", 0)
@@ -75,6 +84,7 @@ def results():
         score=score,
         total_questions=total_questions,
         question=question,
+        current_question=session["current_question"],
     )
 
 

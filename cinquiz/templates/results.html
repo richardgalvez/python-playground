@@ -6,7 +6,7 @@
 
 {% block content %}
   <div class="container mt-5">
-  {% if score < 5 %}
+  {% if current_question < 5 %}
   <h2>You haven't started or completed the quiz yet.</h2>
   <br>
   <h2>Please go Home and start the quiz from there.</h2>
@@ -15,7 +15,7 @@
   answered, whether it was correct or not, and the correct answer.-->
   {% else %}
     {% for q in question %}
-      <h2>{{ q.text }} </<h2>
+      <h2>{{ q.text }} </h2>
       {% set correct_option = q.correct_option_index %}
         <h3>Correct Answer: {{ q.options[correct_option] }}</h3>
         <br>
