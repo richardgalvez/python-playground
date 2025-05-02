@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, Depends, HTTPException
 from typing import List
-from models import Habit, HabitCreate, HabitResponse, get_db
+from models import Habit, HabitCreate, HabitResponse, HabitLog, HabitLogBase, get_db
 
 app = FastAPI()
 
@@ -33,15 +33,24 @@ async def get_habit(habit_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/habits/{habit_id}/log")
-async def log_habit():
+async def log_habit(
+    habit_id: int, habit_log: HabitLogBase, db: Session = Depends(get_db)
+):
     # TODO: Implement HabitLog logic - inserts new row with today's date and habit ID, cannot log more than once per day
+    habit = db.query(Habit).filter(Habit.id == habit_id).first()
+    db_habit_log = HabitLog(
+        id=habit_log.id,
+    )
+    db.add(db_habit_log)
+    db.commit()
+    db.refresh(db_habit_log)
+    return db_habit_log
+    # return {"message": "Habit logged for today!"}
     # TODO: Return 404 if logging habit that doesn't exist
-    return {"message": "Habit logged for today!"}
 
 
 @app.get("/habits/{habit_id}/streak")
 async def get_habit_streak():
-    # TODO: Implement streak request logic with HabitLog - return count of consecutive days (including today), with logs
+    # TODO: Implement streak request logic with HabitLog - return count of consecutive days recorded (including today) from HabitLog
     # TODO: Return 404 if checking habit streak that doesn't exist
     return {"message": "I will get the current completion streak for a habit!"}
-
