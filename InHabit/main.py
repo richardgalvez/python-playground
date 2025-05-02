@@ -33,11 +33,15 @@ async def get_habit(habit_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/habits/{habit_id}/log")
-async def log_habit_completion():
-    return {"message": "I will log today's completion for a habit!"}
+async def log_habit():
+    # TODO: Implement HabitLog logic - inserts new row with today's date and habit ID, cannot log more than once per day
+    # TODO: Return 404 if logging habit that doesn't exist
+    return {"message": "Habit logged for today!"}
 
 
 @app.get("/habits/{habit_id}/streak")
 async def get_habit_streak():
+    # TODO: Implement streak request logic with HabitLog - return count of consecutive days (including today), with logs
+    # TODO: Return 404 if checking habit streak that doesn't exist
     return {"message": "I will get the current completion streak for a habit!"}
 

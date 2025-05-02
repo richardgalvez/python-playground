@@ -16,10 +16,12 @@ Base = declarative_base()
 class Habit(Base):
     __tablename__ = "habits"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     description = Column(String)
     created_at = Column(DateTime, default=datetime.now)
-    # log_data = Column(ARRAY(Date), default=[])    # TODO: Implement log_data attribute for Habit
+
+
+# TODO: Implement HabitLog Table
 
 
 Base.metadata.create_all(bind=engine)

@@ -6,7 +6,7 @@
 
 **Difficulty:** Medium+
 
-**Tags:** FastAPI, REST API, SQLite, Data Persistence, Pydantic, JSON Responses, Backend Development
+**Tags:** FastAPI, REST API, SQLite, SQLAlchemy, Relational Data Modeling, Pydantic, JSON Responses, Backend Development
 
 You are tasked with building a **backend API** for a habit tracking system. Users will be able to **create habits**, **log their completion**, and **track progress over time**, including a streak counter for consecutive days.
 
@@ -18,25 +18,25 @@ This will give you experience working with **FastAPI**, **relational data modeli
 
 - **SQLite** (local database persistence)
 
-- **SQLModel** or `sqlite3` (for ORM-style or direct DB interaction)
+- **SQLAlchemy** (for relational ORM modeling)
 
 - **Pydantic** (request/response models)
 
-- Testable via **Swagger UI** at /docs
+- **Swagger UI** (`/docs`) for endpoint testing
 
 ## 📝 Functional Requirements
 
 Implement the following **REST API routes**:
 
 ```txt
-POST   /habits                     → Create a new habit  
-GET    /habits                     → List all habits  
-GET    /habits/{habit_id}         → Get details for a single habit  
-POST   /habits/{habit_id}/log     → Log today's completion for a habit  
-GET    /habits/{habit_id}/streak  → Get the current completion streak  
+POST   /habits                     → Create a new habit
+GET    /habits                     → List all habits
+GET    /habits/{habit_id}         → Get details for a single habit
+POST   /habits/{habit_id}/log     → Log today's completion for a habit
+GET    /habits/{habit_id}/streak  → Get the current completion streak
 ```
 
-## 📚 Habit Data
+## 📚 Habit Table
 
 Each habit should store:
 
@@ -48,29 +48,52 @@ Each habit should store:
 
 - `created_at`: datetime (auto-set on creation)
 
-- `log_dates`: a list of completion dates (as ISO format strings or separate rows if using a relational table)
+## 🔁 HabitLog Table
+
+SQLite does not support using arrays in columns to capture this value. This will use a separate table instead.
+
+Track each time a habit is completed. Each log entry should include:
+
+- `id`: auto-generated
+
+- `habit_id`: foreign key (links to a habit)
+
+- `logged_date`: date (ISO format)
+
+## 🔄 One-to-Many Relationship
+
+- A **Habit** can have **many HabitLog entries**
+
+- You will query and calculate streaks using the log table
+
 
 ## 🎯 Core Logic
 
-- When a user **logs** a habit, the current date is added to its completion list
+- When a user **logs** a habit:
+  
+  - Insert a new row into `HabitLog` with today’s date and the habit’s ID
+  
+  - Ensure there is **only one log per habit per day**
 
-- Prevent logging the same habit **more than once per day**
+- When requesting a streak:
 
-- When querying `/streak`, calculate how many **consecutive days (up to today)** the habit has been completed
+  - Return the count of **consecutive days**, including/up to today, with logs
 
 - Return **structured JSON** in all responses
 
-- Use FastAPI’s **status codes** and built-in validation (e.g. 422 on invalid input)
+- Use FastAPI’s **status codes** and built-in validation (e.g. 201 for creation, 404 for not found, 422 on invalid input, etc.)
 
 ## ✅ Input Validation & API Rules
 
-- `name` must be present when creating a habit
+- `name` must be present when creating a habit (required)
 
-- Logging is only allowed **once per habit per day**
+- Logging is only allowed **once per habit per day**, should be prevented (via uniqueness or manual check)
 
 - Habit `id` must be valid in all requests
 
 - When logging or streak-checking a habit that doesn’t exist, return **404 Not Found**
+
+- All inputs and outputs should be validated using **Pydantic models**
 
 ## 🧪 Example JSON Interactions
 
@@ -78,8 +101,8 @@ Each habit should store:
 
 ```json
 {
-  "name": "Meditate",
-  "description": "10 minutes of mindfulness"
+  "name": "Drink Water",
+  "description": "2L every day"
 }
 ```
 
@@ -89,12 +112,12 @@ Each habit should store:
 [
   {
     "id": 1,
-    "name": "Meditate",
-    "description": "10 minutes of mindfulness",
-    "created_at": "2025-05-01T10:00:00",
-    "log_dates": ["2025-05-01", "2025-05-02"]
+    "name": "Drink Water",
+    "description": "2L every day",
+    "created_at": "2025-05-01T10:00:00"
   }
 ]
+
 ```
 
 **POST /habits/1/log**
@@ -110,26 +133,26 @@ Each habit should store:
 ```json
 {
   "habit_id": 1,
-  "current_streak": 2
+  "current_streak": 3
 }
 ```
 
 ## 💡 Sample Flow
 
 ```bash
-1. Create Habit (POST /habits)
-2. Log daily completion (POST /habits/{id}/log)
-3. Track streak (GET /habits/{id}/streak)
-4. List all habits (GET /habits)
+1. Create a new habit → POST /habits
+2. Log the habit daily → POST /habits/{id}/log
+3. View streaks → GET /habits/{id}/streak
+4. List or view habits → GET /habits, GET /habits/{id}
 ```
 
 ## 💻 This Project Helps You Practice:
 
-- Designing a clean REST API
+- Designing clean RESTful APIs
 
-- FastAPI routing and status handling
+- FastAPI route structure and data validation
 
-- SQLite + Python data modeling
+- Modeling relational data in SQLAlchemy
 
 - Querying and modifying relational data
 
@@ -137,5 +160,5 @@ Each habit should store:
 
 - API schema validation using Pydantic
 
-- Testing APIs using Swagger UI or Postman
+- Testing APIs using Swagger UI
 
