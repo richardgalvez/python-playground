@@ -14,7 +14,7 @@ Base = declarative_base()
 
 
 class Habit(Base):
-    __tablename__ = "habit"
+    __tablename__ = "habits"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     description = Column(String)
@@ -22,9 +22,9 @@ class Habit(Base):
 
 
 class HabitLog(Base):
-    __tablename__ = "habit_log"
+    __tablename__ = "habit_logs"
     id = Column(Integer, primary_key=True, index=True)
-    habit_id = Column(Integer, ForeignKey("habit.id"))
+    habit_id = Column(Integer, ForeignKey("habits.id"))
     logged_date = Column(DateTime, default=datetime.now)
 
 
@@ -55,9 +55,7 @@ class HabitResponse(BaseModel):
         from_attributes = True
 
 
-class HabitLogBase(BaseModel):
+class HabitLogSchema(BaseModel):
     id: int
-    hait_id: int
-
-    class Config:
-        from_attributes = True
+    habit_id: int
+    logged_date: datetime
