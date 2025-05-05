@@ -1,10 +1,10 @@
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, Depends, HTTPException
 from typing import List
 from models import (
     Habit,
     HabitCreate,
-    HabitLogSchema,
     HabitLog,
     HabitResponse,
     get_db,
@@ -47,7 +47,7 @@ async def log_habit(habit_id: int, db: Session = Depends(get_db)):
             status_code=404, detail="Cannot be logged, habit not found."
         )
     # TODO: Check log for if: new day, else: error if already logged for the day
-    log_check = db.query(HabitLog).filter(Habit.id == habit_id)
+    # log_check = db.query(HabitLog).filter(Habit.id == habit_id)
     db_habit_log = HabitLog(habit_id=habit.id)
     db.add(db_habit_log)
     db.commit()
@@ -58,6 +58,15 @@ async def log_habit(habit_id: int, db: Session = Depends(get_db)):
 
 @app.get("/habits/{habit_id}/streak")
 async def get_habit_streak(habit_id: int, db: Session = Depends(get_db)):
-    # TODO: Implement streak request logic with HabitLog - return count of consecutive days recorded (including today) from HabitLog
-    # TODO: Return 404 if checking habit streak that doesn't exist
-    return {"message": "I will get the current completion streak for a habit!"}
+    habit = db.query(Habit).filter(Habit.id == habit_id).first()
+    if habit is None:
+        raise HTTPException(
+            status_code=404, detail="Cannot check streak, habit not found."
+        )
+    # TODO: Implement streak request logic with HabitLog
+    # Return count of a single habit's log
+    log_count = db.query(HabitLog).all()
+    # Return count of consecutive days recorded (including today) from HabitLog
+    # Logic = Must be within 24 hours of each other?
+    return log_count
+    # return {"message": "I will get the current completion streak for a habit!"}
