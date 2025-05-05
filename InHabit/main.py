@@ -39,7 +39,6 @@ async def get_habit(habit_id: int, db: Session = Depends(get_db)):
     return habit
 
 
-# TODO: Implement HabitLog logic - inserts new row with today's date and habit ID, cannot log more than once per day
 @app.post("/habits/{habit_id}/log")
 async def log_habit(habit_id: int, db: Session = Depends(get_db)):
     habit = db.query(Habit).filter(Habit.id == habit_id).first()
@@ -47,15 +46,18 @@ async def log_habit(habit_id: int, db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=404, detail="Cannot be logged, habit not found."
         )
+    # TODO: Check log for if: new day, else: error if already logged for the day
+    log_check = db.query(HabitLog).filter(Habit.id == habit_id)
     db_habit_log = HabitLog(habit_id=habit.id)
     db.add(db_habit_log)
     db.commit()
     db.refresh(db_habit_log)
-    return db_habit_log
+    # return {"message": "Habit logged for today."}
+    return db_habit_log  # Use for testing/checking result
 
 
 @app.get("/habits/{habit_id}/streak")
-async def get_habit_streak():
+async def get_habit_streak(habit_id: int, db: Session = Depends(get_db)):
     # TODO: Implement streak request logic with HabitLog - return count of consecutive days recorded (including today) from HabitLog
     # TODO: Return 404 if checking habit streak that doesn't exist
     return {"message": "I will get the current completion streak for a habit!"}
