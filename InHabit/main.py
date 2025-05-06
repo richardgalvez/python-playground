@@ -1,4 +1,4 @@
-from sqlalchemy import func
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, Depends, HTTPException
 from typing import List
@@ -9,6 +9,7 @@ from models import (
     HabitResponse,
     get_db,
 )
+import datetime
 
 app = FastAPI()
 
@@ -46,14 +47,18 @@ async def log_habit(habit_id: int, db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=404, detail="Cannot be logged, habit not found."
         )
-    # TODO: Check log for if: new day, else: error if already logged for the day
-    # log_check = db.query(HabitLog).filter(Habit.id == habit_id)
-    db_habit_log = HabitLog(habit_id=habit.id)
-    db.add(db_habit_log)
-    db.commit()
-    db.refresh(db_habit_log)
-    # return {"message": "Habit logged for today."}
-    return db_habit_log  # Use for testing/checking result
+    # TODO: Check log of habit_id if: new day, else: error if already logged for the day
+    # Query the habit_id for last logged date, if previously none, submit:
+    log_count = db.query(HabitLog).filter(HabitLog.habit_id == habit_id).count()
+    current_day = datetime.datetime.now().day
+    # If submitted @ 2025-05-05 at any time, then ready again to log earliest at 2025-05-06T00:00:00
+    if log_count == 0:
+        db_habit_log = HabitLog(habit_id=habit.id)
+        db.add(db_habit_log)
+        db.commit()
+        db.refresh(db_habit_log)
+        # return {"message": "Habit logged for today."}
+        return db_habit_log  # Use for testing/checking result
 
 
 @app.get("/habits/{habit_id}/streak")
@@ -65,8 +70,16 @@ async def get_habit_streak(habit_id: int, db: Session = Depends(get_db)):
         )
     # TODO: Implement streak request logic with HabitLog
     # Return count of a single habit's log
-    log_count = db.query(HabitLog).all()
+    log_count = db.query(HabitLog).filter(HabitLog.habit_id == habit_id).count()
+    latest_record_query = (
+        db.query(HabitLog)
+        .filter(HabitLog.habit_id == habit_id)
+        .order_by(desc(HabitLog.logged_date))
+        .first()
+    )
+    latest_record = latest_record_query.logged_date
     # Return count of consecutive days recorded (including today) from HabitLog
     # Logic = Must be within 24 hours of each other?
-    return log_count
+    # return log_count
+    return latest_record
     # return {"message": "I will get the current completion streak for a habit!"}
