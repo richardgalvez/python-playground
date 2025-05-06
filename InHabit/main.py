@@ -47,18 +47,33 @@ async def log_habit(habit_id: int, db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=404, detail="Cannot be logged, habit not found."
         )
-    # TODO: If latest record of selected Habit id is not current day: submit new log
-    # else: error if already logged for the day
-    # TODO: Convert current_date and response from query to simple enough time format to compare?
-    log_count = db.query(HabitLog).filter(HabitLog.habit_id == habit_id).count()
-    current_date = datetime.datetime.now().date().isoformat()
-    if log_count == 0:
+
+    def log_habit():
         db_habit_log = HabitLog(habit_id=habit.id)
         db.add(db_habit_log)
         db.commit()
         db.refresh(db_habit_log)
-        # return {"message": "Habit logged for today."}
-        return db_habit_log  # Use for testing/checking result
+
+    # Get current date in yyyy-mm-dd format to compare to the latest logged record, if it exists.
+    current_date = datetime.datetime.now().date().isoformat()
+    latest_record_query = (
+        db.query(HabitLog)
+        .filter(HabitLog.habit_id == habit_id)
+        .order_by(desc(HabitLog.logged_date))
+        .first()
+    )
+    if latest_record_query is None:
+        log_habit()
+        return {"message": "Marked Complete - Habit logged for today!"}
+    else:
+        logged_date = latest_record_query.logged_date.date().isoformat()
+        if current_date == logged_date:
+            raise HTTPException(
+                status_code=422, detail="Habit completed today already."
+            )
+        else:
+            log_habit()
+            return {"message": "Marked Complete - Habit logged for today!"}
 
 
 @app.get("/habits/{habit_id}/streak")
@@ -73,12 +88,6 @@ async def get_habit_streak(habit_id: int, db: Session = Depends(get_db)):
     log_count = db.query(HabitLog).filter(HabitLog.habit_id == habit_id).count()
     # Return count of consecutive days recorded (including today) from HabitLog
     # Logic = Must be within 24 hours of each other?
-    latest_record_query = (
-        db.query(HabitLog)
-        .filter(HabitLog.habit_id == habit_id)
-        .order_by(desc(HabitLog.logged_date))
-        .first()
-    )
-    latest_record = latest_record_query.logged_date
-    return latest_record
+    current_time = datetime.datetime.now().date().isoformat()
+    return log_count
     # return {"message": "I will get the current completion streak for a habit!"}
