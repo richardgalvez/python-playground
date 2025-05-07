@@ -78,16 +78,33 @@ async def log_habit(habit_id: int, db: Session = Depends(get_db)):
 
 @app.get("/habits/{habit_id}/streak")
 async def get_habit_streak(habit_id: int, db: Session = Depends(get_db)):
+    log_dates = []
+    current_streak = 0
+
     habit = db.query(Habit).filter(Habit.id == habit_id).first()
     if habit is None:
         raise HTTPException(
             status_code=404, detail="Cannot check streak, habit not found."
         )
     # TODO: Implement streak request logic with HabitLog
-    # Return count of a single habit's log
-    log_count = db.query(HabitLog).filter(HabitLog.habit_id == habit_id).count()
-    # Return count of consecutive days recorded (including today) from HabitLog
-    # Logic = Must be within 24 hours of each other?
-    current_time = datetime.datetime.now().date().isoformat()
-    return log_count
+    # Get all results of a specific habit_id's log
+    log_query = (
+        db.query(HabitLog)
+        .filter(HabitLog.habit_id == habit.id)
+        .order_by(desc(HabitLog.logged_date))
+        .all()
+    )
+    # Working backwards, loop through each logged day and check time delta between each iteration
+    # Record the streak number based on the amount of loop iterations
+    # If time delta is longer than 1 day, break
+    for i in range(len(log_query)):
+        log_dates.append(log_query[i].logged_date.date().isoformat())
+        current_streak += 1
+
+    print(type(log_dates[0]))
+    # for i in range(len(log_dates)):
+    # if (log_dates[i] - log_dates[i - 1]) > 1:
+    # break
+    # Return final count of consecutive days recorded (including today) from HabitLog
+    return log_dates
     # return {"message": "I will get the current completion streak for a habit!"}
