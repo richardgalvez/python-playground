@@ -59,3 +59,8 @@ class HabitLogSchema(BaseModel):
     id: int
     habit_id: int
     logged_date: datetime
+
+
+class HabitLogStreakResponse(BaseModel):
+    habit_id: int
+    current_streak: int

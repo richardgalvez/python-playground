@@ -6,6 +6,7 @@ from models import (
     Habit,
     HabitCreate,
     HabitLog,
+    HabitLogStreakResponse,
     HabitResponse,
     get_db,
 )
@@ -76,7 +77,7 @@ async def log_habit(habit_id: int, db: Session = Depends(get_db)):
             return {"message": "Marked Complete - Habit logged for today!"}
 
 
-@app.get("/habits/{habit_id}/streak")
+@app.get("/habits/{habit_id}/streak", response_model=HabitLogStreakResponse)
 async def get_habit_streak(habit_id: int, db: Session = Depends(get_db)):
     log_dates = []
     current_streak = (
@@ -105,4 +106,8 @@ async def get_habit_streak(habit_id: int, db: Session = Depends(get_db)):
         if (log_dates[i] - log_dates[i + 1]).days > 1:
             break
         current_streak += 1
-    return {"habit_id": {habit_id}, "current streak": {current_streak}}
+    habit_log_streak = HabitLogStreakResponse(
+        habit_id=habit_id,
+        current_streak=current_streak,
+    )
+    return habit_log_streak
