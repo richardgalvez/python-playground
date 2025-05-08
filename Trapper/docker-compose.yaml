@@ -1,7 +1,34 @@
 services:
+  db:
+    container_name: trapper-db
+    image: postgres:17.4
+    hostname: postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: tadmin
+      POSTGRES_PASSWORD: troot
+      POSTGRES_DB: trapper-db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tadmin -d trapper-db || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   app:
     container_name: trapper-server
     build:
-      context: ./server
+      context: server
     ports:
       - "127.0.0.1:8000:8000" # Expose to localhost only
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./server:/trapper-server
+
+volumes:
+  db-data:
+    driver: local
