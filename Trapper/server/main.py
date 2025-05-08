@@ -1,6 +1,9 @@
 from fastapi import FastAPI
+from db.models import Base, engine
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 # TODO: Issue Management - All actions must be scoped to the current user
 

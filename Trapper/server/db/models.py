@@ -1,18 +1,40 @@
-from database import Base
-from sqlalchemy import Column, Integer, String, TIMESTAMP
+from sqlalchemy import create_engine, Column, DateTime, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.engine import URL
+from datetime import datetime
 
-# TODO: Create db tables on startup
+url = URL.create(
+    drivername="postgresql",
+    username="tadmin",
+    password="troot",
+    host="postgres",
+    database="trapper-db",
+    port=5432,
+)
 
-# id: auto-increment
+engine = create_engine(url)
 
-# title: str (required)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# description: str (required)
+Base = declarative_base()
 
-# priority: str (low, medium, high)
 
-# status: str (open, resolved, default: open)
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-# user_id: foreign key to User
 
-# created_at: datetime
+class Issue(Base):
+    __tablename__ = "issues"
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    title = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    priority = Column(String)
+    status = Column(String, default="open")
+    # user_id: foreign key to User
+    created_at = Column(DateTime, default=datetime.now)
