@@ -33,4 +33,4 @@ USER appuser
 EXPOSE 8000
 
 # Run the application.
-CMD ["uvicorn", "main:app", "--reload"]
+CMD ["python", "-m", "uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
