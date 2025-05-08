@@ -1,0 +1,7 @@
+services:
+  app:
+    container_name: trapper-server
+    build:
+      context: ./server
+    ports:
+      - "8000:8000"

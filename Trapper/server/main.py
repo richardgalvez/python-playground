@@ -2,8 +2,6 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-# TODO: User Authentication - 5 routes
-
 # TODO: Issue Management - All actions must be scoped to the current user
 
 
