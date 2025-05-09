@@ -41,12 +41,14 @@ async def create_issue(issue: IssueCreate, db: Session = Depends(get_db)):
     return db_issue
 
 
-@app.get("/issues/{id}", response_model=IssueResponse)
-async def get_issue(issue_id: int, db: Session = Depends(get_db)):
-    issue = db.query(Issue).filter(Issue.id == issue_id).first()
+@app.get("/issues/{id}", response_class=HTMLResponse)
+async def get_issue(id: int, request: Request, db: Session = Depends(get_db)):
+    issue = db.query(Issue).filter(Issue.id == id).first()
     if issue is None:
         raise HTTPException(status_code=404, detail="Issue not found.")
-    return issue
+    return templates.TemplateResponse(
+        "issues.html", {"request": request, "title": "Trapper", "issue": issue}
+    )
 
 
 @app.post("/issues/{id}/resolve")

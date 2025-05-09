@@ -15,12 +15,8 @@
       <br>
     {% else %}
       {% for issue in issues %}
-        {{loop.index}}. {{ issue.title }}
-        <br>
-          <!-- TODO: Add link to details of specific issue (/issues/{id}) -->
-          <!-- Make title of issue clickable or use View Details hyperlink -->
-          View Details
-          <!-- Status: {{ issue.status }} | Priority: {{ issue.priority }} -->
+        <a href="/issues/{{ issue.id }}"</a>
+          ISS00{{loop.index}} - {{ issue.title }}
         <br>
       {% endfor %}
     {% endif %}
