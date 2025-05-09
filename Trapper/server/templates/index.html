@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-  Trapper | Catch and Track Issues
+  {{ title }} | Catch and Track Issues
 {% endblock title%}
 
 {% block content %}
@@ -9,6 +9,21 @@
   <h1 class="mb-4">Trapper</h1>
   <br>
     <h2>Your Current Issues:</h2>
+  <br>
+    {% if issues|length == 0 %}
+      No current issues.
+      <br>
+    {% else %}
+      {% for issue in issues %}
+        {{loop.index}}. {{ issue.title }}
+        <br>
+          <!-- TODO: Add link to details of specific issue (/issues/{id}) -->
+          <!-- Make title of issue clickable or use View Details hyperlink -->
+          View Details
+          <!-- Status: {{ issue.status }} | Priority: {{ issue.priority }} -->
+        <br>
+      {% endfor %}
+    {% endif %}
   <br>
   <a href="/report">
     <button class="issuebutton">Create New Issue</button>
