@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from db.models import Base, engine, get_db, Issue
@@ -7,10 +9,19 @@ from typing import List
 
 app = FastAPI()
 
+templates = Jinja2Templates(directory="templates")
+
 # Initialize database tables on startup.
 Base.metadata.create_all(bind=engine)
 
 # TODO: Issue Management - All actions must be scoped to the current user
+
+
+@app.get("/view", response_class=HTMLResponse)
+async def view(request: Request):
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "title": "View Test"}
+    )
 
 
 @app.get("/", response_model=List[IssueResponse])
