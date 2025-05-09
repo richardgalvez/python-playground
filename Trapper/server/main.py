@@ -28,7 +28,7 @@ async def new_issue():
     return {"message": "New issue form."}
 
 
-@app.post("/report", response_model=(IssueResponse))
+@app.post("/report", response_model=IssueResponse)
 async def create_issue(issue: IssueCreate, db: Session = Depends(get_db)):
     db_issue = Issue(
         title=issue.title,
@@ -41,10 +41,12 @@ async def create_issue(issue: IssueCreate, db: Session = Depends(get_db)):
     return db_issue
 
 
-@app.get("/issues/{id}")
-async def get_issues():
-    # TODO: Add HTTPException if issue not found.
-    return {"message": "View issue detail page."}
+@app.get("/issues/{id}", response_model=IssueResponse)
+async def get_issue(issue_id: int, db: Session = Depends(get_db)):
+    issue = db.query(Issue).filter(Issue.id == issue_id).first()
+    if issue is None:
+        raise HTTPException(status_code=404, detail="Issue not found.")
+    return issue
 
 
 @app.post("/issues/{id}/resolve")
