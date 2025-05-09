@@ -8,26 +8,20 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /trapper-server
-
-# Copy requirements.txt to later install dependencies.
-COPY requirements.txt requirements.txt
-
 # Create a non-privileged user that the app will run under.
-ARG UID=10001
-RUN adduser \
-  --disabled-password \
-  --gecos "" \
-  --home "/nonexistent" \
-  --shell "/sbin/nologin" \
-  --no-create-home \
-  --uid "${UID}" \
-  appuser && \
-  # Install dependencies.
-  pip install --no-cache-dir --upgrade -r requirements.txt
+RUN useradd --create-home appuser
+
+# Set folder for app to be located in user's home directory.
+WORKDIR /home/appuser/trapper-server
 
 # Switch to the non-privileged user to run the application.
 USER appuser
+
+# Upgrade pip and install dependencies.
+RUN --mount=type=cache,target=/root/.cache/pip \
+    --mount=type=bind,source=requirements.txt,target=requirements.txt \
+    python -m pip install --user --upgrade pip && \
+    python -m pip install --user --no-cache-dir -r requirements.txt
 
 # Expose the port that the application listens on.
 EXPOSE 8000

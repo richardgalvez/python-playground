@@ -3,6 +3,7 @@ from db.models import Base, engine
 
 app = FastAPI()
 
+# Initialize database tables on startup.
 Base.metadata.create_all(bind=engine)
 
 # TODO: Issue Management - All actions must be scoped to the current user
@@ -31,3 +32,4 @@ def get_issues():
 @app.post("/issues/{id}/resolve")
 def resolve_issue():
     return {"message": "Mark an issue as resolved."}
+

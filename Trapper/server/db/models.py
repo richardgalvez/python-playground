@@ -36,5 +36,6 @@ class Issue(Base):
     description = Column(String, nullable=False)
     priority = Column(String)
     status = Column(String, default="open")
-    # user_id: foreign key to User
+    # TODO: user_id = Column(foreign key to User)
     created_at = Column(DateTime, default=datetime.now)
+
