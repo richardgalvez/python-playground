@@ -54,7 +54,6 @@ async def get_issue(id: int, request: Request, db: Session = Depends(get_db)):
     )
 
 
-# FIX: Getting 404 not found error upon submission
 @app.post("/issues/{id}/resolve", response_class=RedirectResponse)
 async def resolve_issue(
     id: int, issue_status: str = Form(...), db: Session = Depends(get_db)

@@ -9,17 +9,29 @@
   <h1 class="mb-4">Trapper</h1>
   <br>
     <h2>Your Current Issues:</h2>
-  <br>
     {% if issues|length == 0 %}
       No current issues assigned.
       <br>
     {% else %}
-      {% for issue in issues %}
-        <a href="/issues/{{ issue.id }}"</a>
-          ISS00{{loop.index}} - {{ issue.title }}
-        <br>
-      {% endfor %}
+        {% for issue in issues %}
+          {% if issue.status == "open" %}
+            <a href="/issues/{{ issue.id }}">
+              ISS00{{loop.index}} - {{ issue.title }}
+            </a>
+            <br>
+          {% endif %}
+        {% endfor %}
     {% endif %}
+  <br>
+    <h3>Your Resolved Issues:</h3>
+      {% for issue in issues %}
+        {% if issue.status == "resolved" %}
+          <a href="/issues/{{ issue.id }}">
+            ISS00{{loop.index}} - {{ issue.title }}
+          </a>
+          <br>
+        {% endif %}
+      {% endfor %}
   <br>
   <a href="/report">
     <button class="issuebutton"><b>➕ New Issue</b></button>
