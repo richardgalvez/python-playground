@@ -7,34 +7,25 @@
 {% block content %}
 <div class="container mt-5">
   <h1 class="mb-4">Trapper</h1>
+  <a href="/report">
+    <button class="issuebutton"><b>➕ New Issue</b></button>
+  </a>
   <br>
-    <h2>Your Current Issues:</h2>
+  <br>
+    <h2>Your Current Issues</h2>
     {% if issues|length == 0 %}
       No current issues assigned.
       <br>
     {% else %}
+        <!-- TODO: Implement View of Title, priority, status 
+            Add 'View' and 'Resolve' actions for each entry-->
         {% for issue in issues %}
-          {% if issue.status == "open" %}
             <a href="/issues/{{ issue.id }}">
               ISS00{{loop.index}} - {{ issue.title }}
             </a>
             <br>
-          {% endif %}
         {% endfor %}
+        <br>
     {% endif %}
-  <br>
-    <h3>Your Resolved Issues:</h3>
-      {% for issue in issues %}
-        {% if issue.status == "resolved" %}
-          <a href="/issues/{{ issue.id }}">
-            ISS00{{loop.index}} - {{ issue.title }}
-          </a>
-          <br>
-        {% endif %}
-      {% endfor %}
-  <br>
-  <a href="/report">
-    <button class="issuebutton"><b>➕ New Issue</b></button>
-  </a>
 </div>
 {% endblock content %}
