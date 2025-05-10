@@ -19,7 +19,8 @@
       {{ issue.description }}
     <br>
   <br>
-  <a href="/issues/{{ issue.id }}/resolve">
-    <button class="resolvedbutton"><b>Mark as Resolved</b></button>
+  <form action="/issues/{{ issue.id }}" method=put>
+    <button name="resolved" value="resolved"><b>Mark as Resolved</b></button>
+  </form>
 </div>
 {% endblock content %}

@@ -53,7 +53,19 @@ async def get_issue(id: int, request: Request, db: Session = Depends(get_db)):
     )
 
 
-@app.post("/issues/{id}/resolve")
-async def resolve_issue():
-    # TODO: Add HTTPException if issue not found.
-    return {"message": "Mark an issue as resolved."}
+# FIX: 422 Error when trying to submit, check function and HTML button logic
+@app.put("/issues/{id}")
+async def resolve_issue(
+    id: int, issue_status: str = Form(...), db: Session = Depends(get_db)
+):
+    db_issue = db.get(Issue, id)
+    if not db_issue:
+        raise HTTPException(status_code=404, detail="Issue not found.")
+
+    if db_issue.Issue.status == "open":
+        db_issue.Issue.status = issue_status
+
+    db.add(db_issue)
+    db.commit()
+    db.refresh(db_issue)
+    return RedirectResponse("/issues/{id}", status_code=302)
