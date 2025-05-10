@@ -8,11 +8,22 @@
 <div class="container mt-5">
   <h1 class="mb-4">Create New Issue</h1>
   <br>
-    <!-- TODO: Add form with button to capture user input based on IssueCreate Model-->
-    <p>--- Form will go here ---</p>
+    <form action="/report" method="post">
+      <label for="title">Issue Title:</label>
+      <input type="text" id="title" name="title" required>
+      <br>
+      <label for="description">Description:</label>
+      <input type="text" id="description" name="description" required>
+      <br>
+      <label for="priority">Priority (Low, Medium, High):</label>
+      <select id="priority" name="priority" required>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+      <br>
+      <button type="submit"><b>Create New Issue</b></button>
+    </form>
   <br>
-    <p>[Create New Issue Button]</p>
 </div>
 {% endblock content %}
-
-

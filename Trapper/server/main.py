@@ -1,9 +1,8 @@
-from fastapi import FastAPI, HTTPException, Depends, Request
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Form, HTTPException, Depends, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from db.models import Base, engine, get_db, Issue
-from db.schema import IssueCreate, IssueResponse
 
 app = FastAPI()
 
@@ -12,7 +11,7 @@ templates = Jinja2Templates(directory="templates")
 # Initialize database tables on startup.
 Base.metadata.create_all(bind=engine)
 
-# TODO: Issue Management - All actions must be scoped to the current user
+# TODO: Issue Management - All actions must be scoped to the current logged-in user
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -30,17 +29,18 @@ async def new_issue(request: Request):
     )
 
 
-@app.post("/report", response_model=IssueResponse)
-async def create_issue(issue: IssueCreate, db: Session = Depends(get_db)):
-    db_issue = Issue(
-        title=issue.title,
-        description=issue.description,
-        priority=issue.priority,
-    )
+@app.post("/report", response_class=RedirectResponse)
+async def submit(
+    title: str = Form(...),
+    description: str = Form(...),
+    priority: str = Form(...),
+    db: Session = Depends(get_db),
+):
+    db_issue = Issue(title=title, description=description, priority=priority)
     db.add(db_issue)
     db.commit()
     db.refresh(db_issue)
-    return db_issue
+    return RedirectResponse("/", status_code=302)
 
 
 @app.get("/issues/{id}", response_class=HTMLResponse)

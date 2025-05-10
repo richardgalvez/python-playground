@@ -8,19 +8,18 @@
 <div class="container mt-5">
   <h1 class="mb-4">ISS00{{ issue.id }} - {{ issue.title }}</h1>
     <br>
-      Status: {{ issue.status | capitalize }} 
+      <b>Status:</b> {{ issue.status | capitalize }} 
     <br>
     <br>
-      Priority: {{ issue.priority | capitalize }}
+      <b>Priority:</b> {{ issue.priority | capitalize }}
     <br>
     <br>
-      Description:
+      <b>Description:</b>
         <br>
       {{ issue.description }}
     <br>
   <br>
   <a href="/issues/{{ issue.id }}/resolve">
-    <button class="resolvedbutton">Mark as Resolved</button>
+    <button class="resolvedbutton"><b>Mark as Resolved</b></button>
 </div>
 {% endblock content %}
-

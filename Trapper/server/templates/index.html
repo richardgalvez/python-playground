@@ -11,7 +11,7 @@
     <h2>Your Current Issues:</h2>
   <br>
     {% if issues|length == 0 %}
-      No current issues.
+      No current issues assigned.
       <br>
     {% else %}
       {% for issue in issues %}
@@ -22,7 +22,7 @@
     {% endif %}
   <br>
   <a href="/report">
-    <button class="issuebutton">+ New Issue</button>
+    <button class="issuebutton"><b>➕ New Issue</b></button>
   </a>
 </div>
 {% endblock content %}
