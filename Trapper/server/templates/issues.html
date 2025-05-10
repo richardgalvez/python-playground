@@ -6,22 +6,20 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h1 class="mb-4">Trapper - View Issue</h1>
-  <br>
-    <h2>ISS00{{ issue.id }} - {{ issue.title }}</h2>
-      <br>
-        Status: {{ issue.status | capitalize }} 
-      <br>
-      <br>
-        Priority: {{ issue.priority | capitalize }}
-      <br>
-      <br>
-        Description:
+  <h1 class="mb-4">ISS00{{ issue.id }} - {{ issue.title }}</h1>
+    <br>
+      Status: {{ issue.status | capitalize }} 
+    <br>
+    <br>
+      Priority: {{ issue.priority | capitalize }}
+    <br>
+    <br>
+      Description:
         <br>
-        {{ issue.description }}
-      <br>
+      {{ issue.description }}
+    <br>
   <br>
-  <a href="/issues/{id}/resolve">
+  <a href="/issues/{{ issue.id }}/resolve">
     <button class="resolvedbutton">Mark as Resolved</button>
 </div>
 {% endblock content %}

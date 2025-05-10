@@ -23,9 +23,11 @@ async def home(request: Request, db: Session = Depends(get_db)):
     )
 
 
-@app.get("/report")
-async def new_issue():
-    return {"message": "New issue form."}
+@app.get("/report", response_class=HTMLResponse)
+async def new_issue(request: Request):
+    return templates.TemplateResponse(
+        "report.html", {"request": request, "title": "Trapper"}
+    )
 
 
 @app.post("/report", response_model=IssueResponse)
