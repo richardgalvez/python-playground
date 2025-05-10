@@ -8,6 +8,10 @@ class IssueCreate(BaseModel):
     priority: str
 
 
+class IssueUpdate(BaseModel):
+    status: str
+
+
 class IssueResponse(BaseModel):
     id: int
     title: str

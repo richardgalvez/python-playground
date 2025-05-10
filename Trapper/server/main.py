@@ -1,8 +1,9 @@
-from fastapi import FastAPI, Form, HTTPException, Depends, Request
+from fastapi import FastAPI, Form, HTTPException, Depends, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from db.models import Base, engine, get_db, Issue
+from db.schema import IssueUpdate
 
 app = FastAPI()
 
@@ -53,19 +54,17 @@ async def get_issue(id: int, request: Request, db: Session = Depends(get_db)):
     )
 
 
-# FIX: 422 Error when trying to submit, check function and HTML button logic
-@app.put("/issues/{id}")
+# FIX: Getting 404 not found error upon submission
+@app.post("/issues/{id}/resolve", response_class=RedirectResponse)
 async def resolve_issue(
     id: int, issue_status: str = Form(...), db: Session = Depends(get_db)
 ):
-    db_issue = db.get(Issue, id)
+    db_issue = db.query(Issue).filter(Issue.id == id).first()
     if not db_issue:
         raise HTTPException(status_code=404, detail="Issue not found.")
 
-    if db_issue.Issue.status == "open":
-        db_issue.Issue.status = issue_status
-
+    db_issue.status = issue_status
     db.add(db_issue)
     db.commit()
     db.refresh(db_issue)
-    return RedirectResponse("/issues/{id}", status_code=302)
+    return RedirectResponse("/", status_code=302)

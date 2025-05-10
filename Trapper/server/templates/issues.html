@@ -19,8 +19,13 @@
       {{ issue.description }}
     <br>
   <br>
-  <form action="/issues/{{ issue.id }}" method=put>
-    <button name="resolved" value="resolved"><b>Mark as Resolved</b></button>
-  </form>
+  {% if issue.status == "resolved" %}
+  {% else %}
+    <form action="/issues/{{ issue.id }}/resolved" method=post>
+      <label for="issue_status"></label>
+      <input type="hidden" id="issue_status" name="issue_status" value="resolved">
+      <button type="submit" name="submit"><b>Mark as Resolved</b></button>
+    </form>
+  {% endif %}
 </div>
 {% endblock content %}
