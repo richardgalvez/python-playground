@@ -48,3 +48,12 @@ class Issue(Base):
     status = Column(String, default="open")
     # TODO: user_id = Column(foreign key to User)
     created_at = Column(DateTime, default=datetime.now)
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    username = Column(String, unique=True, nullable=False)
+    hashed_password = Column(String)
+    created_at = Column(DateTime, default=datetime.now)

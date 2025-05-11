@@ -23,3 +23,15 @@ class IssueResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class UserCreate(BaseModel):
+    username: str
+    password: str  # Input string from form, unhashed until submission?
+
+
+class UserResponse(BaseModel):
+    id: str
+    username: str
+    hashed_password: str
+    created_at: datetime
