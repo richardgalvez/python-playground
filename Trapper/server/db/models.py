@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, Column, DateTime, Integer, String
+from sqlalchemy import ForeignKey, create_engine, Column, DateTime, Integer, String
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import URL
 from datetime import datetime
@@ -46,7 +46,7 @@ class Issue(Base):
     description = Column(String, nullable=False)
     priority = Column(String)
     status = Column(String, default="open")
-    # TODO: user_id = Column(foreign key to User)
+    user_id = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=datetime.now)
 
 

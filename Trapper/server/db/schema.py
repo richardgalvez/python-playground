@@ -6,6 +6,7 @@ class IssueCreate(BaseModel):
     title: str
     description: str
     priority: str
+    # TODO: Assign to user based on name, which will then reference their id?
 
 
 class IssueUpdate(BaseModel):
@@ -18,7 +19,7 @@ class IssueResponse(BaseModel):
     description: str
     priority: str
     status: str
-    # user_id: int - Implement after user auth available.
+    user_id: int
     created_at: datetime
 
     class Config:

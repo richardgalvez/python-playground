@@ -36,6 +36,7 @@ async def submit(
     priority: str = Form(...),
     db: Session = Depends(get_db),
 ):
+    # TODO: Entered username to be converted to reference their id value
     db_issue = Issue(title=title, description=description, priority=priority)
     db.add(db_issue)
     db.commit()
