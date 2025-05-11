@@ -5,10 +5,7 @@ services:
     hostname: postgres
     ports:
       - "127.0.0.1:5432:5432"
-    environment:
-      POSTGRES_USER: tadmin
-      POSTGRES_PASSWORD: troot
-      POSTGRES_DB: trapper-db
+    env_file: "./.env"
     volumes:
       - db-data:/var/lib/postgresql/data
     restart: unless-stopped

@@ -1,9 +1,18 @@
+# Environment files - Uncomment as needed
+# .env
+# envs/
+
 # Byte-compiled / optimized / DLL files
 *.py[cod]
 __pycache__/
 
 # C extensions
 *.so
+
+# Virtual environment directories
+env/
+venv/
+.venv/
 
 # Distribution / packaging
 .Python
@@ -43,6 +52,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+.local
 
 # Editor directories and files
 .vscode/*
