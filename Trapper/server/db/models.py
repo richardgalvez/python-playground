@@ -1,15 +1,24 @@
-from sqlalchemy import create_engine, Column, DateTime, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, Column, DateTime, Integer, String
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import URL
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_NAME = os.getenv("DB_NAME")
 
 url = URL.create(
     drivername="postgresql",
-    username="tadmin",
-    password="troot",
-    host="postgres",
-    database="trapper-db",
+    username=DB_USER,
+    password=DB_PASSWORD,
+    host=DB_HOST,
+    database=DB_NAME,
     port=5432,
 )
 
@@ -38,4 +47,3 @@ class Issue(Base):
     status = Column(String, default="open")
     # TODO: user_id = Column(foreign key to User)
     created_at = Column(DateTime, default=datetime.now)
-
