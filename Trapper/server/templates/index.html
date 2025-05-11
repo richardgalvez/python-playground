@@ -17,17 +17,22 @@
       No current issues assigned.
       <br>
     {% else %}
-        <!-- TODO: Implement View of Title, priority, status 
-            Add 'View' and 'Resolve' actions for each entry-->
         {% for issue in issues %}
-            <a href="/issues/{{ issue.id }}">
-              ISS00{{loop.index}} - {{ issue.title }}
-            </a>
-            <br>
+        <b>ISS00{{loop.index}} </b> - {{ issue.title }}
             <p>
-            Priority: {{ issue.priority | capitalize }} | 
-            Status: {{ issue.status | capitalize }}
+            <b>Priority:</b> {{ issue.priority | capitalize }} | 
+            <b>Status:</b> {{ issue.status | capitalize }}
             </p>
+            <a href="/issues/{{ issue.id }}">
+              <button class="viewbutton"><b>View</b></button>
+            </a>
+            <form action="/issues/{{ issue.id }}/resolve" method=post>
+              <label for="issue_status"></label>
+              <input type="hidden" id="issue_status" name="issue_status" value="resolved">
+              <button type="submit" name="submit"><b>Mark as Resolved</b></button>
+            </form>
+        <br>
+        <br>
         {% endfor %}
         <br>
     {% endif %}
