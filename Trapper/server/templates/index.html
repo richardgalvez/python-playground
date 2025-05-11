@@ -24,6 +24,10 @@
               ISS00{{loop.index}} - {{ issue.title }}
             </a>
             <br>
+            <p>
+            Priority: {{ issue.priority | capitalize }} | 
+            Status: {{ issue.status | capitalize }}
+            </p>
         {% endfor %}
         <br>
     {% endif %}
