@@ -7,14 +7,14 @@ from routers import auth
 
 app = FastAPI()
 
-app.include_router(auth.router, tags=["auth"])
 
 templates = Jinja2Templates(directory="templates")
 
 # Initialize database tables on startup.
 Base.metadata.create_all(bind=engine)
 
-# TODO: Issue Management - All actions must be scoped to the current logged-in user
+
+app.include_router(auth.router, tags=["auth"])
 
 
 @app.get("/", response_class=HTMLResponse)

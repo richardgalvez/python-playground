@@ -32,7 +32,7 @@ class UserCreate(BaseModel):
 
 
 class UserResponse(BaseModel):
-    id: str
+    id: int
     username: str
     hashed_password: str
     created_at: datetime
