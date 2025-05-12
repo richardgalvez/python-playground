@@ -2,9 +2,12 @@ from fastapi import FastAPI, Form, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from db.models import Base, engine, get_db, Issue
+from .db.models import Base, engine, get_db, Issue
+from .routers import auth
 
 app = FastAPI()
+
+app.include_router(auth.router)
 
 templates = Jinja2Templates(directory="templates")
 
