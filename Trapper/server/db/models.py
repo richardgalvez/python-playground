@@ -1,6 +1,8 @@
+from typing import Annotated
+from fastapi import Depends
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import ForeignKey, create_engine, Column, DateTime, Integer, String
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.engine import URL
 from datetime import datetime
 import os
@@ -36,6 +38,9 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+db_dependency = Annotated[Session, Depends(get_db)]
 
 
 class Issue(Base):

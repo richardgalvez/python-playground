@@ -36,3 +36,8 @@ class UserResponse(BaseModel):
     username: str
     hashed_password: str
     created_at: datetime
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

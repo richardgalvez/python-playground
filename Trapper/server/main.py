@@ -14,7 +14,7 @@ templates = Jinja2Templates(directory="templates")
 Base.metadata.create_all(bind=engine)
 
 
-app.include_router(auth.router, tags=["auth"])
+app.include_router(auth.router)
 
 
 @app.get("/", response_class=HTMLResponse)
