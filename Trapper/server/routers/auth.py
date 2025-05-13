@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import JWTError, jwt
 from typing import Annotated
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from db.models import User, get_db, db_dependency
-from db.schema import UserCreate, UserResponse
+from db.schema import Token, UserCreate, UserResponse
 
 router = APIRouter(tags=["auth"])
 
@@ -26,17 +27,6 @@ def decode_token(token):
         hashed_password="root",
         created_at=datetime.now(),
     )
-
-
-async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
-    user = decode_token(token)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication credentials.",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return user
 
 
 @router.get("/register")
@@ -80,7 +70,47 @@ def create_access_token(username: str, user_id: int, expires_delta: timedelta):
     encode = {"sub": username, "id": user_id}
     expires = datetime.now() + expires_delta
     encode.update({"exp": expires})
-    return
+    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
+    """
+    Decodes the JWT token and retrieves user details.
+    Raises an exception if the token is invalid or expired.
+    """
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
+        username: str = payload.get("sub")
+        user_id: str = payload.get("id")
+        if username is None or user_id is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate user.",
+            )
+            return {"username": username, "id": user_id}
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User is unauthorized or not valid.",
+        )
+
+
+@router.post("/token", response_model=Token)
+async def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency
+):
+    """
+    Authenticates user credentials and returns a JWT token if valid.
+    """
+    user = authenticate_user(form_data.username, form_data.password, db)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User not authenticated."
+        )
+    username = user.username
+    user_id = user.id
+    token = create_access_token(username, user_id, timedelta(minutes=30))
+    return {"access_token": token, "token_type": "bearer"}
 
 
 @router.get("/login")
