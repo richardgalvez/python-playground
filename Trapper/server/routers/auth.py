@@ -1,8 +1,7 @@
 from datetime import datetime
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Annotated
-
 from db.schema import UserResponse
 
 router = APIRouter()
@@ -22,9 +21,23 @@ def decode_token(token):
     )
 
 
+class DBUser(UserResponse):
+    hashed_password: str
+
+
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     user = decode_token(token)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     return user
+
+
+def fake_hash_password(password: str):
+    return "fakehashed" + password
 
 
 @router.get("/users/me")
