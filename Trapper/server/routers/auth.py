@@ -80,8 +80,8 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
     """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-        username: str = payload.get("sub")
-        user_id: str = payload.get("id")
+        username: str = str(payload.get("sub"))
+        user_id: str = str(payload.get("id"))
         if username is None or user_id is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -107,22 +107,35 @@ async def login_for_access_token(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="User not authenticated."
         )
-    username = user.username
+    username = str(user.username)
     user_id = user.id
     token = create_access_token(username, user_id, timedelta(minutes=30))
+
     return {"access_token": token, "token_type": "bearer"}
 
 
+user_dependency = Annotated[dict, Depends(get_current_user)]
+
+
+@router.get("/auth", status_code=status.HTTP_200_OK)
+async def check_auth(user: user_dependency):
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication failed."
+        )
+    return {"User": user}
+
+
 @router.get("/login")
-def get_login():
+async def get_login():
     return {"message": "Login form."}
 
 
 @router.post("/login")
-def login_user():
+async def login_user():
     return {"message": "Authenticate user and start session."}
 
 
 @router.get("/logout")
-def logout():
+async def logout():
     return {"message": "End session and redirect to homepage."}
