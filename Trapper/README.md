@@ -8,6 +8,11 @@
 
 **Tags:** FastAPI, PostgreSQL, Authentication, HTML Forms, Jinja2, Docker Compose, SQLAlchemy, Full Stack, Web App
 
+
+**Notes**:
+
+- bcrypt set to 4.0.1 due to the warning issues regarding missing '__about__'.
+
 ## 🧠 Project Goal
 
 Build a **containerized, full-stack web app** for tracking software issues or bug reports. Users will be able to **register, log in, create and resolve issues**, and view their own reports via a clean HTML interface.

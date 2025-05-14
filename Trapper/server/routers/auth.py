@@ -6,7 +6,7 @@ from typing import Annotated
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from db.models import User, get_db, db_dependency
-from db.schema import Token, UserCreate, UserResponse
+from db.schema import Token, UserCreate
 
 router = APIRouter(tags=["auth"])
 
@@ -18,15 +18,6 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
 
 
 # TODO: User Authentication - Store user sessions using signed cookies or dependency injection
-
-
-def decode_token(token):
-    return UserResponse(
-        id=1,
-        username=token + "decoded",
-        hashed_password="root",
-        created_at=datetime.now(),
-    )
 
 
 @router.get("/register")
@@ -80,8 +71,8 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
     """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-        username: str = str(payload.get("sub"))
-        user_id: str = str(payload.get("id"))
+        username: str = payload.get("sub")
+        user_id: str = payload.get("id")
         if username is None or user_id is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -118,7 +109,7 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
 @router.get("/auth", status_code=status.HTTP_200_OK)
-async def check_auth(user: user_dependency):
+async def check_auth(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication failed."
