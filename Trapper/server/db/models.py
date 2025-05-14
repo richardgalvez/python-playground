@@ -1,8 +1,8 @@
 from typing import Annotated
 from fastapi import Depends
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import ForeignKey, create_engine, Column, DateTime, Integer, String
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy import ForeignKey, create_engine, DateTime, Integer, String
+from sqlalchemy.orm import Mapped, Session, mapped_column, sessionmaker
 from sqlalchemy.engine import URL
 from datetime import datetime
 import os
@@ -46,19 +46,23 @@ db_dependency = Annotated[Session, Depends(get_db)]
 class Issue(Base):
     __tablename__ = "issues"
 
-    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    title = Column(String, nullable=False)
-    description = Column(String, nullable=False)
-    priority = Column(String)
-    status = Column(String, default="open")
-    user_id = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(DateTime, default=datetime.now)
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, nullable=False, autoincrement=True
+    )
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[str] = mapped_column(String, nullable=False)
+    priority: Mapped[str] = mapped_column(String)
+    status: Mapped[str] = mapped_column(String, default="open")
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
 
 
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    username = Column(String, unique=True, nullable=False)
-    hashed_password = Column(String)
-    created_at = Column(DateTime, default=datetime.now)
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, nullable=False, autoincrement=True
+    )
+    username: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    hashed_password: Mapped[str] = mapped_column(String)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)

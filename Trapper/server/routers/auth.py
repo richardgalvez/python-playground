@@ -6,7 +6,7 @@ from typing import Annotated
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from db.models import User, get_db, db_dependency
-from db.schema import Token, UserCreate
+from db.schema import Token, TokenPayload, UserCreate
 
 router = APIRouter(tags=["auth"])
 
@@ -70,11 +70,14 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)], db: db_depen
     Raises an exception if the token is invalid (details incorrect) or expired.
     """
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        user_id: int = payload.get("id")
+        payload_data = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        # Gather token's payload data in format of defined model to be assigned and checked.
+        token_payload = TokenPayload(**payload_data)
+        username = token_payload.sub
+        user_id = token_payload.id
+        # Guaranteed database check for user by referencing id from token's payload data.
         user = db.query(User).filter(User.id == user_id).first()
-        if user is None:  # Guaranteed database check for user by referencing id
+        if user is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="User not found - could not validate.",
