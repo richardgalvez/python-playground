@@ -64,21 +64,22 @@ def create_access_token(username: str, user_id: int, expires_delta: timedelta):
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
+def get_current_user(token: Annotated[str, Depends(oauth2_bearer)], db: db_dependency):
     """
     Decodes the JWT token and retrieves user details.
-    Raises an exception if the token is invalid or expired.
+    Raises an exception if the token is invalid (details incorrect) or expired.
     """
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
-        user_id: str = payload.get("id")
-        if username is None or user_id is None:
+        user_id: int = payload.get("id")
+        user = db.query(User).filter(User.id == user_id).first()
+        if user is None:  # Guaranteed database check for user by referencing id
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate user.",
+                detail="User not found - could not validate.",
             )
-            return {"username": username, "id": user_id}
+        return {"username": username, "id": user_id}
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -109,11 +110,7 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
 @router.get("/auth", status_code=status.HTTP_200_OK)
-async def check_auth(user: user_dependency, db: db_dependency):
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication failed."
-        )
+async def check_auth(user: user_dependency):
     return {"User": user}
 
 
