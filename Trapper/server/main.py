@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from db.models import Base, engine, get_db, Issue
 from routers import auth
+from routers.auth import user_dependency
 
 app = FastAPI()
 
@@ -33,6 +34,12 @@ async def register(request: Request):
 @app.get("/login", response_class=HTMLResponse)
 async def login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
+
+
+# TESTING ONLY: Check authentication via dependency injection is working.
+@app.get("/auth", response_class=HTMLResponse)
+async def auth_test(request: Request, user: user_dependency):
+    return templates.TemplateResponse("auth.html", {"request": request, "user": user})
 
 
 @app.get("/report", response_class=HTMLResponse)

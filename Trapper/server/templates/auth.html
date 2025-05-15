@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  {{ title }} | Auth TEST
+{% endblock title%}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Logged in as: {{ user.username }}</h1>
+  <h2 class="mb-4">User ID # is: {{ user.id }}</h1>
+</div>
+{% endblock content %}
+

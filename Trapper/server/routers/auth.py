@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends, HTTPException, status, Form
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, Request, status, Form
+from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import RedirectResponse
 from jose import JWTError, jwt
 from typing import Annotated
@@ -56,11 +56,16 @@ def create_access_token(username: str, user_id: int, expires_delta: timedelta):
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-def get_current_user(token: Annotated[str, Depends(oauth2_bearer)], db: db_dependency):
+def get_current_user(request: Request, db: db_dependency):
     """
     Decodes the JWT token and retrieves user details.
     Raises an exception if the token is invalid (details incorrect) or expired.
     """
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token/Cookie not found."
+        )
     try:
         payload_data = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         # Gather token's payload data in format of defined model to be assigned and checked.
@@ -84,30 +89,35 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)], db: db_depen
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency
+    db: db_dependency, username: str = Form(...), password: str = Form(...)
 ):
     """
     Authenticates user credentials and returns a JWT token if valid.
     """
-    user = authenticate_user(form_data.username, form_data.password, db)
+    user = authenticate_user(username, password, db)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="User not authenticated."
         )
-    username = str(user.username)
+    username = user.username
     user_id = user.id
     token = create_access_token(username, user_id, timedelta(minutes=30))
+    # Prepare to return a redirect and set a cookie with login info for session.
+    response = RedirectResponse(url="/", status_code=302)
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        max_age=1800,
+    )
+    return response
 
-    return {"access_token": token, "token_type": "bearer"}
+    # return {"access_token": token, "token_type": "bearer"}
 
 
 user_dependency = Annotated[dict, Depends(get_current_user)]
-
-
-# Authentication via dependency injection is working.
-@router.get("/auth", status_code=status.HTTP_200_OK)
-async def check_auth(user: user_dependency):
-    return {"User": user}
 
 
 @router.get("/logout")
