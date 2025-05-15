@@ -1,12 +1,12 @@
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Form
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from typing import Annotated
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from db.models import User, get_db, db_dependency
-from db.schema import Token, TokenPayload, UserCreate
+from db.schema import Token, TokenPayload
 
 router = APIRouter(tags=["auth"])
 
@@ -17,27 +17,23 @@ bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
 
 
-# TODO: User Authentication - Store user sessions using signed cookies or dependency injection
-
-
 @router.get("/register")
 def get_register():
     return {"message": "Registration form."}
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def create_user(user: UserCreate, db: db_dependency):
+# TODO: Refactor to use the UserCreate class?
+async def create_user(
+    db: db_dependency, username: str = Form(...), password: str = Form(...)
+):
     """
     Creates a new user with a hashed password and stores it in the database.
     """
-    new_user = User(
-        username=user.username,
-        hashed_password=bcrypt_context.hash(user.password),
-    )
+    new_user = User(username=username, hashed_password=bcrypt_context.hash(password))
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-
     return {"message": "Created user account succesfully."}
 
 
@@ -112,14 +108,10 @@ async def login_for_access_token(
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
+# Authentication via dependency injection is working.
 @router.get("/auth", status_code=status.HTTP_200_OK)
 async def check_auth(user: user_dependency):
     return {"User": user}
-
-
-@router.get("/login")
-async def get_login():
-    return {"message": "Login form."}
 
 
 @router.post("/login")

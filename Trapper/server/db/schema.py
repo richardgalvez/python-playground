@@ -28,7 +28,7 @@ class IssueResponse(BaseModel):
 
 class UserCreate(BaseModel):
     username: str
-    password: str  # Input string from form, unhashed until submission?
+    password: str
 
 
 class UserResponse(BaseModel):

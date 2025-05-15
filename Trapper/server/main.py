@@ -25,6 +25,11 @@ async def home(request: Request, db: Session = Depends(get_db)):
     )
 
 
+@app.get("/login", response_class=HTMLResponse)
+async def login(request: Request):
+    return templates.TemplateResponse("auth.html", {"request": request})
+
+
 @app.get("/report", response_class=HTMLResponse)
 async def new_issue(request: Request):
     return templates.TemplateResponse(
@@ -32,6 +37,7 @@ async def new_issue(request: Request):
     )
 
 
+# TODO: Refactor to use the IssueCreate class?
 @app.post("/report", response_class=RedirectResponse)
 async def submit(
     title: str = Form(...),
