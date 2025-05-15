@@ -110,11 +110,6 @@ async def check_auth(user: user_dependency):
     return {"User": user}
 
 
-@router.get("/login")
-async def login():
-    return {"message": "Log in user."}
-
-
 @router.get("/logout")
 async def logout():
     return {"message": "End session and redirect to homepage."}
