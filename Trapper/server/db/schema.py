@@ -6,7 +6,6 @@ class IssueCreate(BaseModel):
     title: str
     description: str
     priority: str
-    # TODO: Assign to user based on name, which will then reference their id?
 
 
 class IssueUpdate(BaseModel):
