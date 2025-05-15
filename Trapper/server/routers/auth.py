@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status, Form
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.responses import RedirectResponse
 from jose import JWTError, jwt
 from typing import Annotated
 from passlib.context import CryptContext
@@ -17,11 +18,6 @@ bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@router.get("/register")
-def get_register():
-    return {"message": "Registration form."}
-
-
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 # TODO: Refactor to use the UserCreate class?
 async def create_user(
@@ -34,7 +30,7 @@ async def create_user(
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return {"message": "Created user account succesfully."}
+    return RedirectResponse("/", status_code=302)
 
 
 def authenticate_user(username: str, password: str, db: Session = Depends(get_db)):
@@ -114,9 +110,9 @@ async def check_auth(user: user_dependency):
     return {"User": user}
 
 
-@router.post("/login")
-async def login_user():
-    return {"message": "Authenticate user and start session."}
+@router.get("/login")
+async def login():
+    return {"message": "Log in user."}
 
 
 @router.get("/logout")

@@ -25,9 +25,9 @@ async def home(request: Request, db: Session = Depends(get_db)):
     )
 
 
-@app.get("/login", response_class=HTMLResponse)
-async def login(request: Request):
-    return templates.TemplateResponse("auth.html", {"request": request})
+@app.get("/register", response_class=HTMLResponse)
+async def register(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
 
 
 @app.get("/report", response_class=HTMLResponse)
