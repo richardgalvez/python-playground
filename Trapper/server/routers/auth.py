@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends, HTTPException, Request, status, Form
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status, Form
 from fastapi.security import OAuth2PasswordBearer
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from jose import JWTError, jwt
 from typing import Annotated
 from passlib.context import CryptContext
@@ -108,18 +108,18 @@ async def login_for_access_token(
         key="access_token",
         value=token,
         httponly=True,
-        secure=False,
+        secure=True,
         samesite="lax",
         max_age=1800,
     )
     return response
 
-    # return {"access_token": token, "token_type": "bearer"}
-
 
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
-@router.get("/logout")
-async def logout():
-    return {"message": "End session and redirect to homepage."}
+@router.get("/logout", response_class=HTMLResponse)
+async def logout(response: Response):
+    response = RedirectResponse(url="/", status_code=302)
+    response.delete_cookie("access_token")
+    return response
