@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from db.models import Base, engine, get_db, Issue
 from routers import auth
-from routers.auth import user_dependency
+from routers.auth import user_dependency, user_logged_in
 
 app = FastAPI()
 
@@ -19,11 +19,18 @@ app.include_router(auth.router)
 
 
 @app.get("/", response_class=HTMLResponse)
-async def home(request: Request, db: Session = Depends(get_db)):
+async def home(request: Request, user: user_dependency, db: Session = Depends(get_db)):
     issues = db.query(Issue).all()
-    return templates.TemplateResponse(
-        "index.html", {"request": request, "title": "Trapper", "issues": issues}
-    )
+    print(user_logged_in)
+    if user_logged_in is False:
+        return templates.TemplateResponse(
+            "index.html",
+            {"request": request, "title": "Trapper", "user_logged_in": user_logged_in},
+        )
+    else:
+        return templates.TemplateResponse(
+            "index.html", {"request": request, "title": "Trapper", "issues": issues}
+        )
 
 
 @app.get("/register", response_class=HTMLResponse)
