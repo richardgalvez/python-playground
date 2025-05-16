@@ -84,7 +84,6 @@ def get_current_user(request: Request, db: db_dependency):
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="User not found - could not validate.",
             )
-        user_logged_in = True
         return {"username": username, "id": user_id}
     except JWTError:
         raise HTTPException(

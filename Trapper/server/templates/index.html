@@ -8,18 +8,18 @@
 <div class="container mt-5">
   <h1 class="mb-4">Trapper</h1>
   <a href="/report">
+  <button class="issuebutton"><b>➕ New Issue</b></button>
   </a>
   <br>
+  <br>
     <h2>Your Current Issues</h2>
-    {% if user_logged_in == false %}
+    {% if not user %}
     User is not logged in, please log in to view your issues.
       <br>
-    {% elif user_logged_in != false and issues|length == 0 %}
+    {% elif user and issues|length == 0 %}
       No current issues assigned.
       <br>
     {% else %}
-    <button class="issuebutton"><b>➕ New Issue</b></button>
-        <br>
         {% for issue in issues %}
         <b>ISS00{{loop.index}} </b> - {{ issue.title }}
             <p>
