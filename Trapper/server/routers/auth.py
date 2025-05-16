@@ -17,8 +17,6 @@ ALGORITHM = "HS256"
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
 
-user_logged_in = False
-
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 # TODO: Refactor to use the UserCreate class?
@@ -64,13 +62,9 @@ def get_current_user(request: Request, db: db_dependency):
     Raises an exception if the token is invalid (details incorrect) or expired.
     """
     token = request.cookies.get("access_token")
-    # TODO: This is a good start but needs to be more granular
     if not token:
         user_logged_in = False
         return user_logged_in
-        # raise HTTPException(
-        #     status_code=status.HTTP_401_UNAUTHORIZED, detail="Token/Cookie not found."
-        # )
     try:
         payload_data = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         # Gather token's payload data in format of defined model to be assigned and checked.

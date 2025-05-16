@@ -14,12 +14,13 @@
   <br>
     <h2>Your Current Issues</h2>
     {% if not user %}
-    User is not logged in, please log in to view your issues.
+    Please log in to view your assigned issues.
       <br>
     {% elif user and issues|length == 0 %}
       No current issues assigned.
       <br>
     {% else %}
+    <!-- TODO: User can only see their tickets: base it on user. -->
         {% for issue in issues %}
         <b>ISS00{{loop.index}} </b> - {{ issue.title }}
             <p>
