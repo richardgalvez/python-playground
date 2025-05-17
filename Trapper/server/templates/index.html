@@ -14,8 +14,8 @@
       <button class="issuebutton"><b>➕ New Issue</b></button>
       </a>
       <br>
-    {% endif %}
       <br>
+    {% endif %}
     <h2>Your Current Issues</h2>
     {% if not user %}
       Please log in to view your assigned issues.
@@ -24,9 +24,8 @@
       No current issues assigned.
       <br>
     {% else %}
-    <!-- TODO: User can only see their tickets: base it on user. -->
         {% for issue in issues %}
-        <b>ISS00{{loop.index}} </b> - {{ issue.title }}
+        <b>Issue:</b> {{ issue.title }}
             <p>
             <b>Priority:</b> {{ issue.priority | capitalize }} | 
             <b>Status:</b> {{ issue.status | capitalize }}

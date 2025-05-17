@@ -20,14 +20,12 @@ app.include_router(auth.router)
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request, user: user_dependency, db: Session = Depends(get_db)):
-    # TODO:  User can only see their tickets
-    # Determine the logged in user's ID number, store in a value or filter straight based on it
-    issues = db.query(Issue).all()
     if not user:
         return templates.TemplateResponse(
             "index.html", {"request": request, "title": "Trapper", "user": user}
         )
     else:
+        issues = db.query(Issue).filter(Issue.user_id == user["id"]).all()
         return templates.TemplateResponse(
             "index.html",
             {"request": request, "title": "Trapper", "user": user, "issues": issues},

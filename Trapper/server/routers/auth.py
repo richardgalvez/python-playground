@@ -18,6 +18,7 @@ bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
 
 
+# TODO: Check if username already exists, display message to use unique username if so
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def create_user(
     db: db_dependency, username: str = Form(...), password: str = Form(...)
