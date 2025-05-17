@@ -20,6 +20,8 @@ app.include_router(auth.router)
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request, user: user_dependency, db: Session = Depends(get_db)):
+    # TODO:  User can only see their tickets
+    # Determine the logged in user's ID number, store in a value or filter straight based on it
     issues = db.query(Issue).all()
     if not user:
         return templates.TemplateResponse(
@@ -55,7 +57,7 @@ async def new_issue(request: Request):
     )
 
 
-# TODO: Refactor to use the IssueCreate class?
+# TODO: Implement error handling if user_id submitted does not exist
 @app.post("/report", response_class=RedirectResponse)
 async def submit(
     title: str = Form(...),
@@ -64,7 +66,6 @@ async def submit(
     user_id: int = Form(...),
     db: Session = Depends(get_db),
 ):
-    # TODO: Entered username to be converted to reference their id value
     db_issue = Issue(
         title=title, description=description, priority=priority, user_id=user_id
     )

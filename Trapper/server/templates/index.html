@@ -7,14 +7,18 @@
 {% block content %}
 <div class="container mt-5">
   <h1 class="mb-4">Trapper</h1>
-  <a href="/report">
-  <button class="issuebutton"><b>➕ New Issue</b></button>
-  </a>
-  <br>
-  <br>
+    {% if not user %}
+      <p>Please log in to create issues.</p>
+    {% else %}
+      <a href="/report">
+      <button class="issuebutton"><b>➕ New Issue</b></button>
+      </a>
+      <br>
+    {% endif %}
+      <br>
     <h2>Your Current Issues</h2>
     {% if not user %}
-    Please log in to view your assigned issues.
+      Please log in to view your assigned issues.
       <br>
     {% elif user and issues|length == 0 %}
       No current issues assigned.

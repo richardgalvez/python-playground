@@ -19,7 +19,6 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-# TODO: Refactor to use the UserCreate class?
 async def create_user(
     db: db_dependency, username: str = Form(...), password: str = Form(...)
 ):
