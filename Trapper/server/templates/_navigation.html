@@ -1,5 +1,5 @@
 <nav>
-  {% for menu_item in ["home", "register", "login", "logout", "auth_test"] %}
+  {% for menu_item in ["home", "register", "login", "logout"] %}
     <a href="{{ url_for(menu_item) }}">{{ menu_item | capitalize }}</a> | 
   {% endfor %}
 </nav>

@@ -42,12 +42,6 @@ async def login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 
-# TESTING ONLY: Check authentication via dependency injection is working.
-@app.get("/auth", response_class=HTMLResponse)
-async def auth_test(request: Request, user: user_dependency):
-    return templates.TemplateResponse("auth.html", {"request": request, "user": user})
-
-
 @app.get("/report", response_class=HTMLResponse)
 async def new_issue(request: Request):
     return templates.TemplateResponse(
