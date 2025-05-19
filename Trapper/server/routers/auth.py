@@ -8,6 +8,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from db.models import User, get_db, db_dependency
 from db.schema import Token, TokenPayload
+import main
 
 router = APIRouter(tags=["auth"])
 
@@ -20,16 +21,19 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def create_user(
-    db: db_dependency, username: str = Form(...), password: str = Form(...)
+    request: Request,
+    db: db_dependency,
+    username: str = Form(...),
+    password: str = Form(...),
 ):
     """
     Creates a new user with a hashed password and stores it in the database.
     """
     user_check = db.query(User).filter(User.username == username).first()
     if user_check:
-        raise HTTPException(
-            status_code=402,
-            detail="User already exists, please create a unique username.",
+        error = "User already exists, please create a unique username."
+        return main.templates.TemplateResponse(
+            "register.html", {"request": request, "error": error}
         )
     else:
         new_user = User(
