@@ -22,10 +22,10 @@
         <option value="high">High</option>
       </select>
       <br>
-      <label for="user_id">Assign to user ID:</label>
+      <label for="user_id">Assign to:</label>
       <select id = "user_id" name="user_id" required>
         {%  for user in user_id_list %}
-        <option value={{ user_id }}>{{ user.id }}</option>
+        <option value={{ user.username }}>{{ user.username }}</option>
         {% endfor %}
       <br>
       <button type="submit"><b>Create New Issue</b></button>

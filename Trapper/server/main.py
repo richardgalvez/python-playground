@@ -44,7 +44,7 @@ async def login(request: Request):
 
 @app.get("/report", response_class=HTMLResponse)
 async def new_issue(request: Request, db: Session = Depends(get_db)):
-    # List out user_id's that exist to put in dropdown option view
+    # List out user_id's that exist to put in dropdown option view.
     user_id_list = db.query(User).all()
     return templates.TemplateResponse(
         "report.html",
