@@ -23,7 +23,10 @@
       </select>
       <br>
       <label for="user_id">Assign to user ID:</label>
-      <input type="text" id="user_id" name="user_id" required>
+      <select id = "user_id" name="user_id" required>
+        {%  for user in user_id_list %}
+        <option value={{ user_id }}>{{ user.id }}</option>
+        {% endfor %}
       <br>
       <button type="submit"><b>Create New Issue</b></button>
     </form>

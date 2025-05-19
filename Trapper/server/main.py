@@ -2,7 +2,7 @@ from fastapi import FastAPI, Form, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from db.models import Base, engine, get_db, Issue
+from db.models import Base, User, engine, get_db, Issue
 from routers import auth
 from routers.auth import user_dependency
 
@@ -43,13 +43,15 @@ async def login(request: Request):
 
 
 @app.get("/report", response_class=HTMLResponse)
-async def new_issue(request: Request):
+async def new_issue(request: Request, db: Session = Depends(get_db)):
+    # List out user_id's that exist to put in dropdown option view
+    user_id_list = db.query(User).all()
     return templates.TemplateResponse(
-        "report.html", {"request": request, "title": "Trapper"}
+        "report.html",
+        {"request": request, "title": "Trapper", "user_id_list": user_id_list},
     )
 
 
-# TODO: Implement error handling if user_id submitted does not exist
 @app.post("/report", response_class=RedirectResponse)
 async def submit(
     title: str = Form(...),
