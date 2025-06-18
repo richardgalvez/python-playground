@@ -10,4 +10,4 @@ class Post(models.Model):
 
     # String representation of the model that returns the data
     def __str__(self):
-        return self.title
+        return str(self.title)
