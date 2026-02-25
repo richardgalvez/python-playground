@@ -25,11 +25,24 @@ while True:
     http_method = first_header_components[0]
     path = first_header_components[1]
 
-    if path == '/':
-        f_input = open('index.html')
-        content = f_input.read()
-        f_input.close()
+    if http_method == 'GET':
+        if path == '/':
+            f_input = open('index.html')
+            content = f_input.read()
+            f_input.close()
 
-        response = 'HTTP/1.1 200 OK \n\n' + content
-        client_socket.sendall(response.encode())
-        client_socket.close()
+            # Two empty lines are required so it doesn't think we're specifying only the headers.
+            response = 'HTTP/1.1 200 OK\n\n' + content
+
+        elif path == '/book':
+            f_input = open('book.json')
+            content = f_input.read()
+            f_input.close()
+
+            response = 'HTTP/1.1 200 OK\n\n' + content
+
+    else:
+        response = 'HTTP/1.1 405 Method Not Allowed\n\n'
+
+    client_socket.sendall(response.encode())
+    client_socket.close()

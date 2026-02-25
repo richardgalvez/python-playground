@@ -1,0 +1,12 @@
+{
+  "title": "The Great Catsby",
+  "author": "Fish Paw Fritzgerald",
+  "year": 1999,
+  "generes": ["Fiction", "Classic", "Kittens"],
+  "available": true,
+  "details": {
+    "pages": 277,
+    "language": "English",
+    "isbn": "982-0-1129-6721-5"
+  }
+}
