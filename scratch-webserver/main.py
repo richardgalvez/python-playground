@@ -3,6 +3,16 @@ import socket
 SERVER_HOST = "0.0.0.0"
 SERVER_PORT = 8080
 
+def read_respond(filename: str):
+    f_input = open(filename)
+    content = f_input.read()
+    f_input.close()
+
+    # Two empty lines are required so it doesn't think we're specifying only the headers.
+    response = 'HTTP/1.1 200 OK\n\n' + content
+    client_socket.sendall(response.encode())
+    client_socket.close()
+
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Server socket will re-use a local address immediately after the socket is closed rather than wait for the default timeout.
@@ -27,22 +37,8 @@ while True:
 
     if http_method == 'GET':
         if path == '/':
-            f_input = open('index.html')
-            content = f_input.read()
-            f_input.close()
-
-            # Two empty lines are required so it doesn't think we're specifying only the headers.
-            response = 'HTTP/1.1 200 OK\n\n' + content
-
+            read_respond('index.html')
         elif path == '/book':
-            f_input = open('book.json')
-            content = f_input.read()
-            f_input.close()
-
-            response = 'HTTP/1.1 200 OK\n\n' + content
-
+            read_respond('book.json')
     else:
         response = 'HTTP/1.1 405 Method Not Allowed\n\n'
-
-    client_socket.sendall(response.encode())
-    client_socket.close()
