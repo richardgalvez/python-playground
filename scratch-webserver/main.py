@@ -13,6 +13,7 @@ def read_respond(filename: str):
     client_socket.sendall(response.encode())
     client_socket.close()
 
+# Open a socket on the server that uses TCP (SOCK_STREAM) for simultaneous communication.
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Server socket will re-use a local address immediately after the socket is closed rather than wait for the default timeout.
@@ -26,6 +27,7 @@ server_socket.listen(5)
 print(f"Web Server Started -- Listening on port {SERVER_PORT}.")
 
 while True:
+    # Create another socket to respond to the client's request with desired content.
     client_socket, client_address = server_socket.accept()
     request = client_socket.recv(1500).decode()
     print(request)
